@@ -2,7 +2,8 @@
 using dotSpace.Interfaces;
 using dotSpace.Interfaces.Network;
 using System;
-using System.Web.Script.Serialization;
+using static Newtonsoft.Json.JsonConvert;
+using Newtonsoft.Json;
 
 namespace dotSpace.BaseClasses.Network.Messages
 {
@@ -52,7 +53,7 @@ namespace dotSpace.BaseClasses.Network.Messages
         /// <summary>
         ///  Gets or sets the action to be executed by the remote space.
         /// </summary>
-        [ScriptIgnore]
+        [JsonIgnore]
         public ActionType Actiontype { get; set; }
         /// <summary>
         /// See Actiontype. Specified due to json.

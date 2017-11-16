@@ -1,7 +1,7 @@
 ﻿using dotSpace.Interfaces;
 using dotSpace.Interfaces.Network;
 using System;
-using System.Web.Script.Serialization;
+using static Newtonsoft.Json.JsonConvert;
 
 namespace dotSpace.BaseClasses.Network
 {
@@ -18,8 +18,7 @@ namespace dotSpace.BaseClasses.Network
         /// </summary>
         public T Deserialize<T>(string json, params Type[] types)
         {
-            JavaScriptSerializer serializer = new JavaScriptSerializer();
-            return serializer.Deserialize<T>(json);
+            return DeserializeObject<T>(json);
         }
 
         /// <summary>
@@ -27,8 +26,7 @@ namespace dotSpace.BaseClasses.Network
         /// </summary>
         public string Serialize(IMessage message, params Type[] types)
         {
-            JavaScriptSerializer serializer = new JavaScriptSerializer();
-            return serializer.Serialize(message);
+            return SerializeObject(message);
         }
 
         /// <summary>
