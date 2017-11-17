@@ -6,7 +6,7 @@
     "configurations": [
         
         {
-            "name": ".NET Core Launch (console)",
+            "name": "Example 1",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
@@ -17,5 +17,46 @@
             "stopAtEntry": false,
             "internalConsoleOptions": "openOnSessionStart"
         },
+
+        {
+            "name": "Example 2",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/examples/Example2/bin/Debug/netcoreapp2.0/Example2.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopAtEntry": false,
+            "internalConsoleOptions": "openOnSessionStart"
+        },
+
+        {
+            "name": "Example 3",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/examples/Example3/bin/Debug/netcoreapp2.0/Example3.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopAtEntry": false,
+            "internalConsoleOptions": "openOnSessionStart"
+        },
+
+        {
+            "name": "Example 4",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/examples/Example4/bin/Debug/netcoreapp2.0/Example4.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopAtEntry": false,
+            "internalConsoleOptions": "openOnSessionStart"
+        }
+
+
     ]
 }
