@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
 namespace dotSpace.Objects.Json
 {
@@ -67,7 +68,7 @@ namespace dotSpace.Objects.Json
             if (values == null)
                 return null;
             List<object> unboxedValues = new List<object>();
-            foreach (Dictionary<string, object> kv in values)
+            foreach (JObject kv in values)
             {
                 if (kv.Count == 1)
                 {
@@ -125,7 +126,7 @@ namespace dotSpace.Objects.Json
         {
             if (unboxedTypes.ContainsKey(typename))
             {
-                return Convert.ChangeType(value, unboxedTypes[typename]);
+                return Convert.ChangeType((value as JValue).Value, unboxedTypes[typename]);
             }
             throw new Exception("Attempting to unbox unsupported type");
         }

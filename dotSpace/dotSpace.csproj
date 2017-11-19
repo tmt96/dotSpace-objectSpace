@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <Title>dotSpace</Title>
     <Description>Programming with Spaces in .NET</Description>
     <Authors>Shane McLean, Tuan Tran, Daishiro Nishida</Authors>
@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+    
   </ItemGroup>
 
 </Project>

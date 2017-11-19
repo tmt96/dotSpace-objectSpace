@@ -3,9 +3,13 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <OutputType>Exe</OutputType>
+    <Title>Example 5</Title>
+    <Version>1.0.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>

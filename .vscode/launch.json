@@ -4,7 +4,17 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-        
+        {
+            "name": "Example 5",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceRoot}/examples/Example5/bin/Debug/netcoreapp2.0/Example5.dll",
+            "args": ["Tuan"],
+            "cwd": "${workspaceRoot}",
+            "stopAtEntry": false,
+            "console": "internalConsole"
+        },
         {
             "name": "Example 1",
             "type": "coreclr",
