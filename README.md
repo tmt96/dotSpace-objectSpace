@@ -66,7 +66,7 @@ Please message me if you find a way to build & run the library easily on .NET Fr
 
 As mentioned, Visual Studio (on Windows and Mac), [MonoDevelop](http://www.monodevelop.com/download/), and [JetBrains Rider](https://www.jetbrains.com/rider/download/) are good .NET IDEs and should simplify development. If you prefer using a text editor, [Omnisharp](http://www.omnisharp.net/#integrations) provides plugins for a wide array of popular tools.
 
-Follow these links for more information on building and running on .NEt Core, Mono, or .Net Framework.
+Follow these links for more information on [.NET Standard](https://docs.microsoft.com/en-us/dotnet/standard/get-started) and its implementations [.NET Core](https://docs.microsoft.com/en-us/dotnet/core/index), [Mono](http://www.mono-project.com/docs/), or [.NET Framework](https://docs.microsoft.com/en-us/dotnet/framework/).
 
 ## Additional Documentation
 
