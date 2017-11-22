@@ -41,7 +41,8 @@ namespace dotSpace.BaseClasses.Space
         /// </summary>
         public void Start()
         {
-            new Thread(this.DoWork).Start();
+            var thread = new Thread(new ThreadStart(this.DoWork));
+            thread.Start();
             //var t = Task.Factory.StartNew(this.DoWork);
         }
         /// <summary>

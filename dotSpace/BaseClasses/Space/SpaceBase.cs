@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-
+using System.Collections.Concurrent;
 
 namespace dotSpace.BaseClasses.Space
 {
@@ -20,8 +20,8 @@ namespace dotSpace.BaseClasses.Space
         /////////////////////////////////////////////////////////////////////////////////////////////
         #region // Fields
 
-        private readonly Dictionary<ulong, List<ITuple>> buckets;
-        private readonly Dictionary<ulong, ReaderWriterLockSlim> bucketLocks;
+        private readonly ConcurrentDictionary<ulong, List<ITuple>> buckets;
+        private readonly ConcurrentDictionary<ulong, ReaderWriterLockSlim> bucketLocks;
         private readonly object bucketAccess;
         private readonly ITupleFactory tupleFactory;
 
@@ -35,8 +35,8 @@ namespace dotSpace.BaseClasses.Space
         /// </summary>
         public SpaceBase(ITupleFactory tupleFactory)
         {
-            this.buckets = new Dictionary<ulong, List<ITuple>>();
-            this.bucketLocks = new Dictionary<ulong, ReaderWriterLockSlim>();
+            this.buckets = new ConcurrentDictionary<ulong, List<ITuple>>();
+            this.bucketLocks = new ConcurrentDictionary<ulong, ReaderWriterLockSlim>();
             this.bucketAccess = new object();
             this.tupleFactory = tupleFactory;
             if (this.tupleFactory == null)
@@ -64,10 +64,8 @@ namespace dotSpace.BaseClasses.Space
         public ITuple Get(params object[] pattern)
         {
             ulong hash = this.ComputeHash(pattern);
-            Monitor.Enter(this.bucketAccess);
-            List<ITuple> bucket = this.GetBucket(hash);
+            var bucket = this.GetBucket(hash);
             ReaderWriterLockSlim bucketLock = this.GetBucketLock(hash);
-            Monitor.Exit(this.bucketAccess);
 
             ITuple t = this.WaitUntilMatch(bucket, bucketLock, pattern);
             // Guard against duplication from retrieval
@@ -92,10 +90,8 @@ namespace dotSpace.BaseClasses.Space
         public ITuple GetP(params object[] pattern)
         {
             ulong hash = this.ComputeHash(pattern);
-            Monitor.Enter(this.bucketAccess);
             List<ITuple> bucket = this.GetBucket(hash);
             ReaderWriterLockSlim bucketLock = this.GetBucketLock(hash);
-            Monitor.Exit(this.bucketAccess);
 
             ITuple t = this.Find(bucket, bucketLock, pattern);
             // Guard against duplication from retrieval
@@ -123,10 +119,8 @@ namespace dotSpace.BaseClasses.Space
         public IEnumerable<ITuple> GetAll(params object[] pattern)
         {
             ulong hash = this.ComputeHash(pattern);
-            Monitor.Enter(this.bucketAccess);
             List<ITuple> bucket = this.GetBucket(hash);
             ReaderWriterLockSlim bucketLock = this.GetBucketLock(hash);
-            Monitor.Exit(this.bucketAccess);
 
             IEnumerable<ITuple> results = this.FindAll(bucket, bucketLock, pattern);
             if (results != null)
@@ -152,10 +146,8 @@ namespace dotSpace.BaseClasses.Space
         public ITuple Query(params object[] pattern)
         {
             ulong hash = this.ComputeHash(pattern);
-            Monitor.Enter(this.bucketAccess);
             List<ITuple> bucket = this.GetBucket(hash);
             ReaderWriterLockSlim bucketLock = this.GetBucketLock(hash);
-            Monitor.Exit(this.bucketAccess);
 
             return this.Copy(this.WaitUntilMatch(bucket, bucketLock, pattern));
         }
@@ -174,10 +166,8 @@ namespace dotSpace.BaseClasses.Space
         public ITuple QueryP(params object[] pattern)
         {
             ulong hash = this.ComputeHash(pattern);
-            Monitor.Enter(this.bucketAccess);
             List<ITuple> bucket = this.GetBucket(hash);
             ReaderWriterLockSlim bucketLock = this.GetBucketLock(hash);
-            Monitor.Exit(this.bucketAccess);
             return this.Copy(this.Find(bucket, bucketLock, pattern));
         }
 
@@ -195,10 +185,8 @@ namespace dotSpace.BaseClasses.Space
         public IEnumerable<ITuple> QueryAll(params object[] pattern)
         {
             ulong hash = this.ComputeHash(pattern);
-            Monitor.Enter(this.bucketAccess);
             List<ITuple> bucket = this.GetBucket(hash);
             ReaderWriterLockSlim bucketLock = this.GetBucketLock(hash);
-            Monitor.Exit(this.bucketAccess);
             return this.FindAll(bucket, bucketLock, pattern).Select(x => this.Copy(x));
         }
 
@@ -216,10 +204,8 @@ namespace dotSpace.BaseClasses.Space
         public void Put(params object[] values)
         {
             ulong hash = this.ComputeHash(values);
-            Monitor.Enter(this.bucketAccess);
             List<ITuple> bucket = this.GetBucket(hash);
             ReaderWriterLockSlim bucketLock = this.GetBucketLock(hash);
-            Monitor.Exit(this.bucketAccess);
 
             bucketLock.EnterWriteLock();
             bucket.Insert(this.GetIndex(bucket.Count), this.Copy(values));
@@ -322,19 +308,21 @@ namespace dotSpace.BaseClasses.Space
         }
         private List<ITuple> GetBucket(ulong hash)
         {
-            if (!this.buckets.ContainsKey(hash))
-            {
-                this.buckets.Add(hash, new List<ITuple>());
-            }
-            return this.buckets[hash];
+            // if (!this.buckets.ContainsKey(hash))
+            // {
+            //     this.buckets.Add(hash, new List<ITuple>());
+            // }
+            // return this.buckets[hash];
+            return this.buckets.GetOrAdd(hash, new List<ITuple>());
         }
         private ReaderWriterLockSlim GetBucketLock(ulong hash)
         {
-            if (!this.bucketLocks.ContainsKey(hash))
-            {
-                this.bucketLocks.Add(hash, new ReaderWriterLockSlim());
-            }
-            return this.bucketLocks[hash];
+            // if (!this.bucketLocks.ContainsKey(hash))
+            // {
+            //     this.bucketLocks.Add(hash, new ReaderWriterLockSlim());
+            // }
+            // return this.bucketLocks[hash];
+            return this.bucketLocks.GetOrAdd(hash, new ReaderWriterLockSlim());
         }
         private void Wait(object _lock)
         {

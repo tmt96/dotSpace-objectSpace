@@ -1,0 +1,58 @@
+using System;
+using dotSpace.BaseClasses.Space;
+using dotSpace.Interfaces.Space;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
+namespace ClickRate
+{
+    public class ImpressionEntryParser : AgentBase
+    {
+        struct ImpressionEntry
+        {
+            internal string adId {get; set;}
+            internal string referrer {get; set;}
+            internal string impressionId { get; set; }
+        }
+
+        private readonly string fileName;
+
+        public ImpressionEntryParser(String name, ISpace space, string fileName) : base(name, space) => this.fileName = fileName;
+
+        protected override void DoWork()
+        {
+            while (true)
+            {
+                var tuple = Get(fileName, typeof(string));
+                string entry = (string) tuple[1];
+                if (entry.Equals(Program.INPUT_END))
+                {
+                    return;
+                }
+
+                var jObject = JObject.Parse(entry);
+                var impressionId = jObject["impressionId"].ToString();
+                var adId = jObject["adId"].ToString();
+                var referrer = jObject["referrer"].ToString();
+                // var impressionEntry = JsonConvert.DeserializeObject<ImpressionEntry>(entry);
+                // Console.WriteLine(impressionEntry);
+                UpdateAdImpressionAndClickCounts(adId, referrer);
+                Put(impressionId, adId, referrer );
+            }
+        }
+
+        private void UpdateAdImpressionAndClickCounts(string adID, string referrerUrl)
+        {
+            var impressionCount = 1; 
+            var clickCount = 0;
+            var allTuplesOfAd = GetAll(adID, referrerUrl, typeof(int), typeof(int));
+
+            foreach (var tuple in allTuplesOfAd)
+            {
+                impressionCount += (int) tuple[2];
+                clickCount += (int) tuple[3];
+            }
+            Put(adID, referrerUrl, impressionCount, clickCount);
+        }
+    }
+}
