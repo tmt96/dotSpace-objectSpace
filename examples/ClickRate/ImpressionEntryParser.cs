@@ -8,36 +8,43 @@ namespace ClickRate
 {
     public class ImpressionEntryParser : AgentBase
     {
-        struct ImpressionEntry
-        {
-            internal string adId {get; set;}
-            internal string referrer {get; set;}
-            internal string impressionId { get; set; }
-        }
-
         private readonly string fileName;
 
         public ImpressionEntryParser(String name, ISpace space, string fileName) : base(name, space) => this.fileName = fileName;
 
         protected override void DoWork()
         {
+            var endSignal = false;
             while (true)
             {
-                var tuple = Get(fileName, typeof(string));
-                string entry = (string) tuple[1];
-                if (entry.Equals(Program.INPUT_END))
+                var tuple = GetP(fileName, typeof(string));
+                if (tuple == null)
                 {
-                    return;
+                    if (!endSignal)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        Console.WriteLine("end");
+                        return;
+                    }
                 }
+                else if (((string) tuple[1]).Equals(Program.INPUT_END))
+                {
+                    endSignal = true;
+                    continue;
+                }
+                else
+                {
+                    var jObject = JObject.Parse((string) tuple[1]);
+                    var impressionId = jObject["impressionId"].ToString();
+                    var adId = jObject["adId"].ToString();
+                    var referrer = jObject["referrer"].ToString();
 
-                var jObject = JObject.Parse(entry);
-                var impressionId = jObject["impressionId"].ToString();
-                var adId = jObject["adId"].ToString();
-                var referrer = jObject["referrer"].ToString();
-                // var impressionEntry = JsonConvert.DeserializeObject<ImpressionEntry>(entry);
-                // Console.WriteLine(impressionEntry);
-                UpdateAdImpressionAndClickCounts(adId, referrer);
-                Put(impressionId, adId, referrer );
+                    UpdateAdImpressionAndClickCounts(adId, referrer);
+                    Put(impressionId, adId, referrer);
+                }
             }
         }
 

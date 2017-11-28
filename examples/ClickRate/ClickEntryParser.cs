@@ -13,16 +13,34 @@ namespace ClickRate
 
         protected override void DoWork()
         {
+            var endSignal = false;
             while (true) 
             {
-                var tuple = Get(fileName, typeof(string));
-                if (((string) tuple[1]).Equals(Program.INPUT_END)) 
+                var tuple = GetP(fileName, typeof(string));
+                if (tuple == null)
                 {
-                    Put(Program.JOBS_FINISHED);
-                    return;
+                    if (!endSignal)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        Console.WriteLine("end");
+                        Put(Program.JOBS_FINISHED);
+                        return;
+                    }
                 }
-                var (adID, referrerUrl) = getClickEntryAdInfo((string) tuple[1]);
-                UpdateAdImpressionAndClickCounts(adID, referrerUrl);
+                else if (((string)tuple[1]).Equals(Program.INPUT_END))
+                {
+                    endSignal = true;
+                    continue;
+                }
+                else
+                {
+                    var (adID, referrerUrl) = getClickEntryAdInfo((string) tuple[1]);
+                    // Console.WriteLine(name);
+                    UpdateAdImpressionAndClickCounts(adID, referrerUrl);
+                }
             }
         }
 
