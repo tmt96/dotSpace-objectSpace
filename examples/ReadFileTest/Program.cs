@@ -22,26 +22,15 @@ namespace ReadFileTest
                     while ((line = sr.ReadLine()) != null) 
                     {
                         i++;
-                        // space.Put(i, line);
                         treeSpace.Put(line);
-                        // treeSpace.GetP(typeof(string));
 
                     }
                     Console.WriteLine(i);
-                    // for (; i > 0; i--) {
-                        // space.Get(i, typeof(string));
-                        // treeSpace.QueryP(typeof(string));
-                        // treeSpace.GetP(typeof(string));
-                        // Console.WriteLine(res[1]);
-                    // }
                     var resList  = treeSpace.GetAll(typeof(string));
-                    // foreach (var res in resList)        
-                    // {
-                    //     Console.WriteLine(res[0]);
-                    // }
-                    var res = String.Join('\n', resList.Select(str => str[0]));
-                    Console.WriteLine(res);
-                    // tree.QueryAll(typeof(int), typeof(string));
+                    foreach (var res in resList)        
+                    {
+                        Console.WriteLine(res[0]);
+                    }
                 }
             }
             catch (Exception e) 

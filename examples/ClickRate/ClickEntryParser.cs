@@ -38,7 +38,6 @@ namespace ClickRate
                 else
                 {
                     var (adID, referrerUrl) = getClickEntryAdInfo((string) tuple[1]);
-                    // Console.WriteLine(name);
                     UpdateAdImpressionAndClickCounts(adID, referrerUrl);
                 }
             }

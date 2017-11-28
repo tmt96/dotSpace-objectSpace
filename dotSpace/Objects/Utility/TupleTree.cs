@@ -30,10 +30,7 @@ namespace dotSpace.Objects.Utility
                 curTree = curTree[tuple[i]];
             }
 
-            lock (curTree)
-            {
-                curTree.Count++;
-            }
+            curTree.Count++;
         }
 
         public ITuple Query(params object[] pattern)
@@ -60,15 +57,11 @@ namespace dotSpace.Objects.Utility
             return this.GetAll(0, res, pattern);
         }
 
-
         private ITuple Query(int cur, object[] res, object[] pattern)
         {
             if (cur >= pattern.Length)
             {
-                lock (this)
-                {
-                    return Count > 0 ? new dotSpace.Objects.Space.Tuple(res) : null;
-                }
+                return Count > 0 ? new dotSpace.Objects.Space.Tuple(res) : null;
             }           
             if (pattern[cur] is Type)
             {
@@ -102,10 +95,7 @@ namespace dotSpace.Objects.Utility
             IEnumerable<ITuple> resList = new List<ITuple>();
             if (cur >= pattern.Length)
             {
-                lock (this)
-                {
-                    resList = Enumerable.Repeat(new dotSpace.Objects.Space.Tuple(res.ToArray()), Count).ToList();
-                }
+                resList = Enumerable.Repeat(new dotSpace.Objects.Space.Tuple(res.ToArray()), Count).ToList();
             }
             if (pattern[cur] is Type)
             {
@@ -118,7 +108,7 @@ namespace dotSpace.Objects.Utility
                         var subResult = this[key].QueryAll(cur + 1, res, pattern);
                         if (subResult != null)
                         {
-                            resList = resList.Concat(subResult).ToList();
+                            res.AddRange(subResult);
                         }
                         res.RemoveAt(res.Count - 1);
                     }
@@ -138,20 +128,16 @@ namespace dotSpace.Objects.Utility
             object removedKey = null;
             if (cur >= pattern.Length)
             {
-                lock (this)
+                if (Count > 0)
                 {
-                    if (Count > 0)
-                    {
-                        Count--;
-                        tuple = new dotSpace.Objects.Space.Tuple(res);
-                    }
+                    Count--;
+                    tuple = new dotSpace.Objects.Space.Tuple(res);
                 }
             }
             else if (pattern[cur] is Type)
             {
                 foreach (var item in lookupTable)
                 {
-                    // var item = lookupTable.ElementAt(0);
                     var key = item.Key;
                     if (MatchedType((Type)pattern[cur], key))
                     {
@@ -162,7 +148,6 @@ namespace dotSpace.Objects.Utility
                             removedKey = key;
                             break;
                         }
-                        // res[cur] = null;
                     }
                 }
             }
@@ -179,17 +164,14 @@ namespace dotSpace.Objects.Utility
             return tuple;
         }
 
-        private IEnumerable<ITuple> GetAll(int cur, List<object> res, object[] pattern)
+        private List<Space.Tuple> GetAll(int cur, List<object> res, object[] pattern)
         {
-            IEnumerable<ITuple> resList = new List<ITuple>();
+            var resList = new List<Space.Tuple>();
             var removedKeys = new List<object>();
             if (cur >= pattern.Length)
             {
-                lock (this)
-                {
-                    resList = Enumerable.Repeat(new dotSpace.Objects.Space.Tuple(res.ToArray()), Count);
-                    Count = 0;
-                }
+                resList = Enumerable.Repeat(new dotSpace.Objects.Space.Tuple(res.ToArray()), Count).ToList();
+                Count = 0;
             }
             else if (pattern[cur] is Type)
             {
@@ -204,7 +186,7 @@ namespace dotSpace.Objects.Utility
                         {
                             removedKeys.Add(key);
                         }
-                        resList = resList.Concat(subResult);
+                        resList.AddRange(subResult);
                         res.RemoveAt(res.Count - 1);
                     }
                 }

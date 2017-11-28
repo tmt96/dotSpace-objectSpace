@@ -8,7 +8,6 @@ namespace ClickRate
     public class Program
     {
         internal const int WORKERS_COUNT = 4;
-
         internal const string INPUT_END = "End of Input!";
         internal const string JOBS_FINISHED = "Jobs Finished!";
         internal const string JOBS_START = "Jobs Start";
@@ -40,6 +39,5 @@ namespace ClickRate
             var clickRateCalculator = new ClickRateCalculator(tSpace, clickFileName, impressionFileName, outFileName);
             clickRateCalculator.Start();
         }
-
     }
 }

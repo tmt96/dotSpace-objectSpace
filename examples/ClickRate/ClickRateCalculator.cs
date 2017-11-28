@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -31,18 +32,17 @@ namespace ClickRate
             }
             Put(clickFileName, Program.INPUT_END);
             Summarize();
-            Console.WriteLine("finish work");
             Environment.Exit(0);
         }
 
-        private async void Summarize()
+        private void Summarize()
         {
             Get(Program.JOBS_FINISHED);
             var allAdsInfo = GetAll(typeof(string), typeof(string), typeof(int), typeof(int));
-            Console.WriteLine(allAdsInfo.Count());
 
             using (StreamWriter sw = new StreamWriter(outFileName, false, Encoding.UTF8, 0x10000))
             {
+                Console.WriteLine("start writing");
                 foreach (var adInfo in allAdsInfo)
                 {
                     var clickRate = (double)((int)adInfo[3]) / (double)((int)adInfo[2]);
@@ -50,8 +50,9 @@ namespace ClickRate
                         (string) adInfo[1] + " " + 
                         (string) adInfo[0] + "\t" +
                         clickRate;
-                    await sw.WriteLineAsync(line);
+                    sw.WriteLine(line);
                 }
+                Console.WriteLine("finish job");
             }
         }
 
@@ -65,7 +66,6 @@ namespace ClickRate
                     while ((line = sr.ReadLine()) != null)
                     {
                         Put(fileName, line);
-                        // Console.WriteLine("Coordinator");
                     }
                 }
             }
