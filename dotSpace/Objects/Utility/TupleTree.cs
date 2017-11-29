@@ -8,6 +8,7 @@ namespace dotSpace.Objects.Utility
 {
     public class TupleTree
     {
+        private enum TupleHandleOption { KEEP, REMOVE };
         private int Count { get; set; }
 
         private Dictionary<object, TupleTree> lookupTable;
@@ -35,68 +36,45 @@ namespace dotSpace.Objects.Utility
 
         public ITuple Query(params object[] pattern)
         {
-            var res = new object[pattern.Length];
-            return this.Query(0, res, pattern);
+            var res = new List<object>(pattern.Length);
+            return this.Query(TupleHandleOption.KEEP, 0, res, pattern);
         }
 
         public IEnumerable<ITuple> QueryAll(params object[] pattern)
         {
             var res = new List<object>(pattern.Length);
-            return this.QueryAll(0, res, pattern);
+            return this.QueryAll(TupleHandleOption.KEEP, 0, res, pattern);
         }
 
         public ITuple Get(params object[] pattern)
         {
-            var res = new object[pattern.Length];
-            return this.Get(0, res, pattern);
+            var res = new List<object>(pattern.Length);
+            return this.Query(TupleHandleOption.REMOVE, 0, res, pattern);
         }
 
         public IEnumerable<ITuple> GetAll(params object[] pattern)
         {
             var res = new List<object>(pattern.Length);
-            return this.GetAll(0, res, pattern);
+            return this.QueryAll(TupleHandleOption.REMOVE, 0, res, pattern);
         }
 
-        private ITuple Query(int cur, object[] res, object[] pattern)
+        private ITuple Query(TupleHandleOption option, int cur, List<object> res, object[] pattern)
         {
             if (cur >= pattern.Length)
             {
-                return Count > 0 ? new dotSpace.Objects.Space.Tuple(res) : null;
-            }           
-            if (pattern[cur] is Type)
-            {
-                foreach (var item in lookupTable)
+                if (Count > 0)
                 {
-                    var key = item.Key;
-                    if (MatchedType((Type)pattern[cur], key))
+                    if (option == TupleHandleOption.REMOVE)
                     {
-                        res[cur] = key;
-                        var subResult = this[key].Query(cur + 1, res, pattern);
-                        if (subResult != null)
-                        {
-                            return subResult;
-                        }
-                        res[cur] = null;
+                        Count--;
                     }
+                    return new Space.Tuple(res.ToArray());
                 }
                 return null;
-            } 
-            else if (lookupTable.ContainsKey(pattern[cur]))
-            {
-                res[cur] = pattern[cur];
-                return this[pattern[cur]].Query(cur + 1, res, pattern);
             }
 
-            return null;
-        }
+            ITuple tuple = null;
 
-        private IEnumerable<ITuple> QueryAll( int cur, List<object> res, object[] pattern)
-        {
-            IEnumerable<ITuple> resList = new List<ITuple>();
-            if (cur >= pattern.Length)
-            {
-                resList = Enumerable.Repeat(new dotSpace.Objects.Space.Tuple(res.ToArray()), Count).ToList();
-            }
             if (pattern[cur] is Type)
             {
                 foreach (var item in lookupTable)
@@ -105,10 +83,10 @@ namespace dotSpace.Objects.Utility
                     if (MatchedType((Type)pattern[cur], key))
                     {
                         res.Add(key);
-                        var subResult = this[key].QueryAll(cur + 1, res, pattern);
-                        if (subResult != null)
+                        tuple = this[key].Query(option, cur + 1, res, pattern);
+                        if (tuple!= null)
                         {
-                            res.AddRange(subResult);
+                            break;
                         }
                         res.RemoveAt(res.Count - 1);
                     }
@@ -117,74 +95,41 @@ namespace dotSpace.Objects.Utility
             else if (lookupTable.ContainsKey(pattern[cur]))
             {
                 res.Add(pattern[cur]);
-                resList = this[pattern[cur]].QueryAll(cur + 1, res, pattern);
+                tuple = this[pattern[cur]].Query(option, cur + 1, res, pattern);
             }
-            return resList;
+            if (option == TupleHandleOption.REMOVE && tuple != null)
+            {
+                RemoveEmptyChild(tuple[cur]);
+            }
+            return tuple;
         }
 
-        private ITuple Get(int cur, object[] res, object[] pattern)
+        private List<Space.Tuple> QueryAll(TupleHandleOption option, int cur, List<object> res, object[] pattern)
         {
-            ITuple tuple = null;
-            object removedKey = null;
             if (cur >= pattern.Length)
             {
-                if (Count > 0)
+                var result = Enumerable.Repeat(new dotSpace.Objects.Space.Tuple(res.ToArray()), Count).ToList();
+                if (option == TupleHandleOption.REMOVE)
                 {
-                    Count--;
-                    tuple = new dotSpace.Objects.Space.Tuple(res);
+                    Count = 0;
                 }
+                return result;
             }
-            else if (pattern[cur] is Type)
+
+            var resList = new List<Space.Tuple>();
+            var matchedKeysList = new List<object>();
+            if (pattern[cur] is Type)
             {
                 foreach (var item in lookupTable)
                 {
                     var key = item.Key;
                     if (MatchedType((Type)pattern[cur], key))
                     {
-                        res[cur] = key;
-                        tuple = this[key].Get(cur + 1, res, pattern);
-                        if (tuple != null)
-                        {
-                            removedKey = key;
-                            break;
-                        }
-                    }
-                }
-            }
-            else if (lookupTable.ContainsKey(pattern[cur]))
-            {
-                res[cur] = pattern[cur];
-                tuple =  this[pattern[cur]].Get( cur + 1, res, pattern);
-                removedKey = pattern[cur];
-            }
-            if (removedKey != null)
-            {
-                RemoveEmptyChild(removedKey);
-            }
-            return tuple;
-        }
-
-        private List<Space.Tuple> GetAll(int cur, List<object> res, object[] pattern)
-        {
-            var resList = new List<Space.Tuple>();
-            var removedKeys = new List<object>();
-            if (cur >= pattern.Length)
-            {
-                resList = Enumerable.Repeat(new dotSpace.Objects.Space.Tuple(res.ToArray()), Count).ToList();
-                Count = 0;
-            }
-            else if (pattern[cur] is Type)
-            {
-                foreach (var item in lookupTable)
-                {
-                    var key = item.Key;
-                    if (MatchedType((Type) pattern[cur], key))
-                    {
                         res.Add(key);
-                        var subResult = this[key].GetAll(cur + 1, res, pattern);
+                        var subResult = this[key].QueryAll(option, cur + 1, res, pattern);
                         if (subResult.Count() != 0)
                         {
-                            removedKeys.Add(key);
+                            matchedKeysList.Add(key);
                         }
                         resList.AddRange(subResult);
                         res.RemoveAt(res.Count - 1);
@@ -194,12 +139,16 @@ namespace dotSpace.Objects.Utility
             else if (lookupTable.ContainsKey(pattern[cur]))
             {
                 res.Add(pattern[cur]);
-                resList = this[pattern[cur]].GetAll(cur + 1, res, pattern);
-                removedKeys.Add(pattern[cur]); 
+                resList = this[pattern[cur]].QueryAll(option, cur + 1, res, pattern);
+                matchedKeysList.Add(pattern[cur]);
             }
-            foreach (var key in removedKeys)
+
+            if (option == TupleHandleOption.REMOVE)
             {
-                RemoveEmptyChild(key);
+                foreach (var key in matchedKeysList)
+                {
+                    RemoveEmptyChild(key);
+                }
             }
             return resList;
         }
