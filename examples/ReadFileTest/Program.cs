@@ -13,13 +13,13 @@ namespace ReadFileTest
             var fileName = args[0];
             // var space = new SequentialSpace();
             var treeSpace = new TreeSpace();
-            try 
+            try
             {
-                using (StreamReader sr = new StreamReader(fileName)) 
+                using (StreamReader sr = new StreamReader(fileName))
                 {
                     string line;
                     int i = 0;
-                    while ((line = sr.ReadLine()) != null) 
+                    while ((line = sr.ReadLine()) != null)
                     {
                         i++;
                         treeSpace.Put(line);
@@ -27,13 +27,13 @@ namespace ReadFileTest
                     }
                     Console.WriteLine(i);
                     var resList  = treeSpace.GetAll(typeof(string));
-                    foreach (var res in resList)        
+                    foreach (var res in resList)
                     {
                         Console.WriteLine(res[0]);
                     }
                 }
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
                 // Let the user know what went wrong.
                 Console.WriteLine("The file could not be read:");

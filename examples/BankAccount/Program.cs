@@ -11,18 +11,17 @@ namespace BankAccount
     {
         static void Main(string[] args)
         {
-
             // Instantiate a new Fifobased tuple space.
             ISpace dtu = new SequentialSpace();
             
             // Instantiate a new agent, assign the tuple space and start it.
             AgentBase userA = new User("A", dtu);
-	    AgentBase userB = new User("B", dtu);
+            AgentBase userB = new User("B", dtu);
             userA.Start();
-	    userB.Start();
+            userB.Start();
 
-	    Console.WriteLine("Starting");
-	    dtu.Put(0);
+            Console.WriteLine("Starting");
+            dtu.Put(0);
         }
     }
 }

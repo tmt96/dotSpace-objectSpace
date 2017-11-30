@@ -9,10 +9,9 @@ namespace dotSpace.Objects.Space
     {
         private TupleTree spaceTree;
         private object tLock;
-
         private ReaderWriterLockSlim readerWriterLock = new ReaderWriterLockSlim();
-        
-        public TreeSpace() 
+
+        public TreeSpace()
         {
             spaceTree = new TupleTree();
             tLock = new object();

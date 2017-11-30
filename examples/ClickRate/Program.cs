@@ -26,7 +26,7 @@ namespace ClickRate
             var outFileName = args[2];
 
             var tSpace = new TreeSpace();
-            
+
             var clickLogAgent = new ClickEntryParser("click", tSpace, clickFileName);
             clickLogAgent.Start();
 

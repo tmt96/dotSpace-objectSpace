@@ -10,8 +10,8 @@ namespace dotSpace.Objects.Utility
     {
         private enum TupleHandleOption { KEEP, REMOVE };
         private int Count { get; set; }
-
         private Dictionary<object, TupleTree> lookupTable;
+
         public TupleTree()
         {
             this.Count = 0;

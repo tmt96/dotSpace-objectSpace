@@ -46,8 +46,8 @@ namespace ClickRate
                 foreach (var adInfo in allAdsInfo)
                 {
                     var clickRate = (double)((int)adInfo[3]) / (double)((int)adInfo[2]);
-                    var line = 
-                        (string) adInfo[1] + " " + 
+                    var line =
+                        (string) adInfo[1] + " " +
                         (string) adInfo[0] + "\t" +
                         clickRate;
                     sw.WriteLine(line);
@@ -77,6 +77,5 @@ namespace ClickRate
                 Environment.Exit(1);
             }
         }
-
     }
 }
