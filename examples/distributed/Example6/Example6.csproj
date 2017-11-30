@@ -15,6 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\dotSpace\dotSpace.csproj" />
+    <ProjectReference Include="..\..\..\dotSpace\dotSpace.csproj" />
   </ItemGroup>
 </Project>
