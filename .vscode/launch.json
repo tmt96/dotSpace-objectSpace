@@ -69,12 +69,42 @@
         },
 
         {
-            "name": "Example 6",
+            "name": "Example 6 - Client",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
             "program": "${workspaceFolder}/examples/Example6/bin/Debug/netcoreapp2.0/Example6.dll",
             "args": ["philosopher"],
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopAtEntry": false,
+            "internalConsoleOptions": "openOnSessionStart"
+        },
+
+        {
+            "name": "Example 6 - Server",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/examples/Example6/bin/Debug/netcoreapp2.0/Example6.dll",
+            "args": ["table"],
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopAtEntry": false,
+            "internalConsoleOptions": "openOnSessionStart"
+        },
+
+        {
+            "name": "CLickRate",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/examples/ClickRate/bin/Debug/netcoreapp2.0/ClickRate.dll",
+            "args": [
+                "${workspaceFolder}/examples/ClickRate/dataset_merged/impressions_merged/impressions.log",
+                "${workspaceFolder}/examples/ClickRate/dataset_merged/clicks_merged/clicks.log",
+                "${workplaceFolder}/examples/ClickRate/output.txt"
+            ],
             "cwd": "${workspaceFolder}",
             "console": "internalConsole",
             "stopAtEntry": false,
