@@ -60,42 +60,41 @@ namespace dotSpace.Objects.Utility
 
         private ITuple Query(TupleHandleOption option, int cur, List<object> res, object[] pattern)
         {
+            #region LocalFunctions
+            ITuple RecursiveQuery(object element)
+            {
+                res.Add(element);
+                var resultTuple = this[element].Query(option, cur + 1, res, pattern);
+                res.RemoveAt(res.Count - 1);
+                return resultTuple;
+            }                
+            #endregion
+
             if (cur >= pattern.Length)
             {
-                if (Count > 0)
+                if (Count <= 0)
                 {
-                    if (option == TupleHandleOption.REMOVE)
-                    {
-                        Count--;
-                    }
-                    return new Space.Tuple(res.ToArray());
+                    return null;
                 }
-                return null;
+                if (option == TupleHandleOption.REMOVE)
+                {
+                    Count--;
+                }
+                return new Space.Tuple(res.ToArray());
             }
 
             ITuple tuple = null;
 
             if (pattern[cur] is Type)
             {
-                foreach (var item in lookupTable)
-                {
-                    var key = item.Key;
-                    if (MatchedType((Type)pattern[cur], key))
-                    {
-                        res.Add(key);
-                        tuple = this[key].Query(option, cur + 1, res, pattern);
-                        if (tuple!= null)
-                        {
-                            break;
-                        }
-                        res.RemoveAt(res.Count - 1);
-                    }
-                }
+                tuple = lookupTable.Select(item => item.Key)
+                                   .Where(key => MatchedType((Type)pattern[cur], key))
+                                   .Select(RecursiveQuery)
+                                   .FirstOrDefault();
             }
             else if (lookupTable.ContainsKey(pattern[cur]))
             {
-                res.Add(pattern[cur]);
-                tuple = this[pattern[cur]].Query(option, cur + 1, res, pattern);
+                tuple = RecursiveQuery(pattern[cur]);
             }
             if (option == TupleHandleOption.REMOVE && tuple != null)
             {
@@ -106,6 +105,16 @@ namespace dotSpace.Objects.Utility
 
         private List<Space.Tuple> QueryAll(TupleHandleOption option, int cur, List<object> res, object[] pattern)
         {
+            #region LocalFunctions
+            List<Space.Tuple> RecursiveQueryAll(object element)
+            {
+                res.Add(element);
+                var allTuples = this[element].QueryAll(option, cur + 1, res, pattern);
+                res.RemoveAt(res.Count - 1);
+                return allTuples;
+            }                
+            #endregion
+
             if (cur >= pattern.Length)
             {
                 var result = Enumerable.Repeat(new dotSpace.Objects.Space.Tuple(res.ToArray()), Count).ToList();
@@ -120,26 +129,20 @@ namespace dotSpace.Objects.Utility
             var matchedKeysList = new List<object>();
             if (pattern[cur] is Type)
             {
-                foreach (var item in lookupTable)
+                foreach (var key in lookupTable.Select(item => item.Key)
+                                               .Where(key => MatchedType((Type)pattern[cur], key)))
                 {
-                    var key = item.Key;
-                    if (MatchedType((Type)pattern[cur], key))
+                    var subResult = RecursiveQueryAll(key);
+                    if (subResult.Count != 0)
                     {
-                        res.Add(key);
-                        var subResult = this[key].QueryAll(option, cur + 1, res, pattern);
-                        if (subResult.Count() != 0)
-                        {
-                            matchedKeysList.Add(key);
-                        }
+                        matchedKeysList.Add(key);
                         resList.AddRange(subResult);
-                        res.RemoveAt(res.Count - 1);
                     }
                 }
             }
             else if (lookupTable.ContainsKey(pattern[cur]))
             {
-                res.Add(pattern[cur]);
-                resList = this[pattern[cur]].QueryAll(option, cur + 1, res, pattern);
+                resList = RecursiveQueryAll(pattern[cur]);
                 matchedKeysList.Add(pattern[cur]);
             }
 
