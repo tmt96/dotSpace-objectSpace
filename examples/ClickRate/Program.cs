@@ -27,8 +27,8 @@ namespace ClickRate
 
             var tSpace = new TreeSpace();
 
-            var clickLogAgent = new ClickEntryParser("click", tSpace, clickFileName);
-            clickLogAgent.Start();
+            var clickRateCalculator = new ClickRateCalculator(tSpace, clickFileName, impressionFileName, outFileName);
+            clickRateCalculator.Start();
 
             for (var i = 0; i < WORKERS_COUNT; i++)
             {
@@ -36,8 +36,8 @@ namespace ClickRate
                 impressionLogAgent.Start();
             }
 
-            var clickRateCalculator = new ClickRateCalculator(tSpace, clickFileName, impressionFileName, outFileName);
-            clickRateCalculator.Start();
+            var clickLogAgent = new ClickEntryParser("click", tSpace, clickFileName);
+            clickLogAgent.Start();
         }
     }
 }

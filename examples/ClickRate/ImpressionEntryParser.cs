@@ -15,6 +15,7 @@ namespace ClickRate
         protected override void DoWork()
         {
             var endSignal = false;
+            Console.WriteLine("impression parser agent starts");
             while (true)
             {
                 var tuple = GetP(fileName, typeof(string));
@@ -26,12 +27,17 @@ namespace ClickRate
                     }
                     else
                     {
-                        Console.WriteLine("end");
+                        Console.WriteLine("impression parser agent finishes");
+                        Put(Program.JOBS_FINISHED);
                         return;
                     }
                 }
                 else if (((string) tuple[1]).Equals(Program.INPUT_END))
                 {
+                    if (endSignal)
+                    {
+                        Put(tuple);
+                    }
                     endSignal = true;
                     continue;
                 }

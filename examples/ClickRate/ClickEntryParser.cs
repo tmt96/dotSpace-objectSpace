@@ -13,6 +13,7 @@ namespace ClickRate
 
         protected override void DoWork()
         {
+            Console.WriteLine("click parser agent starts");
             var endSignal = false;
             while (true) 
             {
@@ -25,13 +26,17 @@ namespace ClickRate
                     }
                     else
                     {
-                        Console.WriteLine("end");
+                        Console.WriteLine("click parser agent finishes");
                         Put(Program.JOBS_FINISHED);
                         return;
                     }
                 }
                 else if (((string)tuple[1]).Equals(Program.INPUT_END))
                 {
+                    if (endSignal)
+                    {
+                        Put(tuple);
+                    }
                     endSignal = true;
                     continue;
                 }

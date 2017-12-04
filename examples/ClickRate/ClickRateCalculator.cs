@@ -26,18 +26,32 @@ namespace ClickRate
         {
             ReadAndSendToSpace(clickFileName);
             ReadAndSendToSpace(impressionFileName);
-            for (int i = 0; i < Program.WORKERS_COUNT; i++)
-            {
-                Put(impressionFileName, Program.INPUT_END);
-            }
-            Put(clickFileName, Program.INPUT_END);
+            WaitForParsers(Program.WORKERS_COUNT, 1);
             Summarize();
             Environment.Exit(0);
         }
 
+        private void WaitForParsers(int impressionParsersCount, int clickParsersCount)
+        {
+            // signal end to parsers
+            for (int i = 0; i < impressionParsersCount; i++)
+            {
+                Put(impressionFileName, Program.INPUT_END);
+            }
+            for (int i = 0; i < clickParsersCount; i++)
+            {
+                Put(clickFileName, Program.INPUT_END);
+            }
+
+            // wait for end signal from parsers
+            for (int i = 0; i < impressionParsersCount + clickParsersCount; i++)
+            {
+                Get(Program.JOBS_FINISHED);
+            }
+        }
+
         private void Summarize()
         {
-            Get(Program.JOBS_FINISHED);
             var allAdsInfo = GetAll(typeof(string), typeof(string), typeof(int), typeof(int));
 
             using (StreamWriter sw = new StreamWriter(outFileName, false, Encoding.UTF8, 0x10000))
