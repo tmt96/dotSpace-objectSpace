@@ -67,7 +67,7 @@ namespace dotSpace.Objects.Utility
                 var resultTuple = this[element].Query(option, cur + 1, res, pattern);
                 res.RemoveAt(res.Count - 1);
                 return resultTuple;
-            }                
+            }
             #endregion
 
             if (cur >= pattern.Length)
@@ -90,6 +90,7 @@ namespace dotSpace.Objects.Utility
                 tuple = lookupTable.Select(item => item.Key)
                                    .Where(key => MatchedType((Type)pattern[cur], key))
                                    .Select(RecursiveQuery)
+                                   .Where(t => t != null)
                                    .FirstOrDefault();
             }
             else if (lookupTable.ContainsKey(pattern[cur]))
@@ -112,7 +113,7 @@ namespace dotSpace.Objects.Utility
                 var allTuples = this[element].QueryAll(option, cur + 1, res, pattern);
                 res.RemoveAt(res.Count - 1);
                 return allTuples;
-            }                
+            }
             #endregion
 
             if (cur >= pattern.Length)
@@ -129,8 +130,9 @@ namespace dotSpace.Objects.Utility
             var matchedKeysList = new List<object>();
             if (pattern[cur] is Type)
             {
-                foreach (var key in lookupTable.Select(item => item.Key)
-                                               .Where(key => MatchedType((Type)pattern[cur], key)))
+                foreach (var key in 
+                            lookupTable.Select(item => item.Key)
+                                       .Where(key => MatchedType((Type)pattern[cur], key)))
                 {
                     var subResult = RecursiveQueryAll(key);
                     if (subResult.Count != 0)
