@@ -30,7 +30,7 @@ namespace dotSpace.BaseClasses.Space
             return space.Get<T>();
         }
 
-        public T Get<T>(Predicate<T> condition)
+        public T Get<T>(Func<T, bool> condition)
         {
             return space.Get<T>(condition);
         }
@@ -40,7 +40,7 @@ namespace dotSpace.BaseClasses.Space
             return space.GetAll<T>();
         }
 
-        public IEnumerable<T> GetAll<T>(Predicate<T> condition)
+        public IEnumerable<T> GetAll<T>(Func<T, bool> condition)
         {
             return space.GetAll<T>(condition);
         }
@@ -50,7 +50,7 @@ namespace dotSpace.BaseClasses.Space
             return space.GetP<T>();
         }
 
-        public T GetP<T>(Predicate<T> condition)
+        public T GetP<T>(Func<T, bool> condition)
         {
             return space.GetP<T>(condition);
         }
@@ -65,7 +65,7 @@ namespace dotSpace.BaseClasses.Space
             return space.Query<T>();
         }
 
-        public T Query<T>(Predicate<T> condition)
+        public T Query<T>(Func<T, bool> condition)
         {
             return space.Query<T>(condition);
         }
@@ -75,7 +75,7 @@ namespace dotSpace.BaseClasses.Space
             return space.QueryAll<T>();
         }
 
-        public IEnumerable<T> QueryAll<T>(Predicate<T> condition)
+        public IEnumerable<T> QueryAll<T>(Func<T, bool> condition)
         {
             return space.QueryAll<T>(condition);
         }
@@ -85,7 +85,7 @@ namespace dotSpace.BaseClasses.Space
             return space.QueryP<T>();
         }
 
-        public T QueryP<T>(Predicate<T> condition)
+        public T QueryP<T>(Func<T, bool> condition)
         {
             return space.QueryP<T>(condition);
         }

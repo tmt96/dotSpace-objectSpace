@@ -33,7 +33,7 @@ namespace dotSpace.BaseClasses.Space
             return result;
         }
 
-        public T Get<T>(Predicate<T> condition)
+        public T Get<T>(Func<T, bool> condition)
         {
             var bucket = GetBucket<T>();
             var result = GetP<T>(condition);
@@ -52,7 +52,7 @@ namespace dotSpace.BaseClasses.Space
             return RemoveAll<T>(o => true);
         }
 
-        public IEnumerable<T> GetAll<T>(Predicate<T> condition)
+        public IEnumerable<T> GetAll<T>(Func<T, bool> condition)
         {
             return RemoveAll(condition);
         }
@@ -62,7 +62,7 @@ namespace dotSpace.BaseClasses.Space
             return RemoveFirst<T>(o => true);
         }
 
-        public T GetP<T>(Predicate<T> condition)
+        public T GetP<T>(Func<T, bool> condition)
         {
             return RemoveFirst<T>(condition);
         }
@@ -94,7 +94,7 @@ namespace dotSpace.BaseClasses.Space
             return result;
         }
 
-        public T Query<T>(Predicate<T> condition)
+        public T Query<T>(Func<T, bool> condition)
         {
             var bucket = GetBucket<T>();
             var result = QueryP<T>(condition);
@@ -113,7 +113,7 @@ namespace dotSpace.BaseClasses.Space
             return GetBucket<T>();
         }
 
-        public IEnumerable<T> QueryAll<T>(Predicate<T> condition)
+        public IEnumerable<T> QueryAll<T>(Func<T, bool> condition)
         {
             return FindAll<T>(condition);
         }
@@ -123,7 +123,7 @@ namespace dotSpace.BaseClasses.Space
             return Find<T>(t => true);
         }
 
-        public T QueryP<T>(Predicate<T> condition)
+        public T QueryP<T>(Func<T, bool> condition)
         {
             return Find<T>(condition);
         }
@@ -131,45 +131,46 @@ namespace dotSpace.BaseClasses.Space
 
         protected abstract int GetIndex(int count);
 
-        private T RemoveFirst<T>(Predicate<T> condition)
+        private T RemoveFirst<T>(Func<T, bool> condition)
         {
             var (bucket, rwLock) = GetBucketAndRWLock<T>();
 
             rwLock.EnterWriteLock();
-            var element = bucket.Find(condition);
+            var element = bucket.FirstOrDefault(condition);
             bucket.Remove(element);
             rwLock.ExitWriteLock();
             return element;
         }
 
-        private List<T> RemoveAll<T>(Predicate<T> condition)
+        private IEnumerable<T> RemoveAll<T>(Func<T, bool> condition)
         {
             var (bucket, rwLock) = GetBucketAndRWLock<T>();
 
             rwLock.EnterWriteLock();
-            var elements = bucket.FindAll(condition);
-            bucket.RemoveAll(condition);
+            var elements = bucket.Where(condition);
+            var pred = new Predicate<T>(condition);
+            bucket.RemoveAll(pred);
             rwLock.ExitWriteLock();
             return elements;
         }
 
 
-        private T Find<T>(Predicate<T> condition)
+        private T Find<T>(Func<T, bool> condition)
         {
             var bucket = GetBucket<T>();
             var rwLock = GetReaderWriterLock<T>();
             rwLock.EnterReadLock();
-            var t = bucket.Find(condition);
+            var t = bucket.FirstOrDefault(condition);
             rwLock.ExitReadLock();
             return t;
         }
 
-        private List<T> FindAll<T>(Predicate<T> condition)
+        private IEnumerable<T> FindAll<T>(Func<T, bool> condition)
         {
             var bucket = GetBucket<T>();
             var rwLock = GetReaderWriterLock<T>();
             rwLock.EnterReadLock();
-            var list = bucket.FindAll(condition);
+            var list = bucket.Where(condition);
             rwLock.ExitReadLock();
             return list;
         }
