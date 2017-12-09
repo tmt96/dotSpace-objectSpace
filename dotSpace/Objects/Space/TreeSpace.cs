@@ -23,12 +23,14 @@ namespace dotSpace.Objects.Space
 
         public ITuple Get(params object[] pattern)
         {
+            Monitor.Enter(tLock);
             var tuple = GetP(pattern);
             while (tuple == null)
             {
-                Wait(tLock);
+                Monitor.Wait(tLock);
                 tuple = GetP(pattern);
             }
+            Monitor.Exit(tLock);
             return tuple;
         }
 
@@ -65,10 +67,12 @@ namespace dotSpace.Objects.Space
 
         public void Put(params object[] tuple)
         {
+            Monitor.Enter(tLock);
             readerWriterLock.EnterWriteLock();
             spaceTree.Add(tuple);
             readerWriterLock.ExitWriteLock();
-            Awake(tLock);
+            Monitor.PulseAll(tLock);
+            Monitor.Exit(tLock);
         }
 
         public ITuple Query(IPattern pattern)
@@ -78,12 +82,14 @@ namespace dotSpace.Objects.Space
 
         public ITuple Query(params object[] pattern)
         {
+            Monitor.Enter(tLock);
             var tuple = QueryP(pattern);
             while (tuple == null)
             {
-                Wait(tLock);
+                Monitor.Wait(tLock);
                 tuple = QueryP(pattern);
             }
+            Monitor.Exit(tLock);
             return tuple;
         }
 
