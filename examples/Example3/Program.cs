@@ -10,7 +10,7 @@ namespace Example3
         static void Main(string[] args)
         {
             // Instantiate a new Fifobased tuplespace.
-            ISpace pingpongTable = new SequentialSpace();
+            ISpace pingpongTable = new TreeSpace();
             
             // Insert the ping.
             pingpongTable.Put("ping", 0);
