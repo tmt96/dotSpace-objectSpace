@@ -207,10 +207,12 @@ namespace dotSpace.BaseClasses.Space
             List<ITuple> bucket = this.GetBucket(hash);
             ReaderWriterLockSlim bucketLock = this.GetBucketLock(hash);
 
+            Monitor.Enter(bucket);
             bucketLock.EnterWriteLock();
             bucket.Insert(this.GetIndex(bucket.Count), this.Copy(values));
             bucketLock.ExitWriteLock();
-            this.Awake(bucket);
+            Monitor.PulseAll(bucket);
+            Monitor.Exit(bucket);
         }
 
         #endregion
@@ -259,10 +261,12 @@ namespace dotSpace.BaseClasses.Space
         private ITuple WaitUntilMatch(List<ITuple> bucket, ReaderWriterLockSlim bucketLock, object[] pattern)
         {
             ITuple t;
+            Monitor.Enter(bucket);
             while (((t = this.Find(bucket, bucketLock, pattern)) == null))
             {
-                this.Wait(bucket);
+                Monitor.Wait(bucket);
             }
+            Monitor.Exit(bucket);
             return t;
         }
         private ITuple Find(List<ITuple> bucket, ReaderWriterLockSlim bucketLock, object[] pattern)
@@ -324,19 +328,6 @@ namespace dotSpace.BaseClasses.Space
             // return this.bucketLocks[hash];
             return this.bucketLocks.GetOrAdd(hash, new ReaderWriterLockSlim());
         }
-        private void Wait(object _lock)
-        {
-            Monitor.Enter(_lock);
-            Monitor.Wait(_lock);
-            Monitor.Exit(_lock);
-        }
-        private void Awake(object _lock)
-        {
-            Monitor.Enter(_lock);
-            Monitor.PulseAll(_lock);
-            Monitor.Exit(_lock);
-        }
-
         #endregion
     }
 }

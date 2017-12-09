@@ -38,7 +38,6 @@ namespace ClickRate
                 }
                 else
                 {
-					Console.WriteLine(endSignal);
                     var (adID, referrerUrl) = getClickEntryAdInfo((string) tuple[1]);
                     UpdateAdImpressionAndClickCounts(adID, referrerUrl);
                 }
@@ -51,11 +50,7 @@ namespace ClickRate
             
             var entry = JsonConvert.DeserializeAnonymousType(clickEntry, ClickEntry);
 
-			Console.WriteLine("waiting for impression");
             var adInfo = Get(entry.impressionId, typeof(string), typeof(string));
-			Console.WriteLine("Found impression");
-
-			Console.WriteLine("click entry read");
 			
             return ((string) adInfo[1], (string) adInfo[2]);
         }
@@ -72,7 +67,6 @@ namespace ClickRate
                 clickCount += (int) tuple[3];
             }
             Put(adID, referrerUrl, impressionCount, clickCount);
-			Console.WriteLine("click count updated for " + adID + ", " + referrerUrl);
         }
     }
 }

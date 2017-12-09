@@ -46,12 +46,6 @@ namespace ClickRate
                     var adId = jObject["adId"].ToString();
                     var referrer = jObject["referrer"].ToString();
 
-					var num = int.Parse(jObject["number"].ToString());
-					if (num > max) {
-						max = num;
-						Console.WriteLine(max);
-					}
-
                     UpdateAdImpressionAndClickCounts(adId, referrer);
                     Put(impressionId, adId, referrer);
                 }
