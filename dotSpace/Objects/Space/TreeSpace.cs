@@ -118,19 +118,5 @@ namespace dotSpace.Objects.Space
             readerWriterLock.ExitReadLock();
             return tuple;
         }
-
-        private void Wait(object mLock)
-        {
-            Monitor.Enter(mLock);
-            Monitor.Wait(mLock);
-            Monitor.Exit(mLock);
-        }
-
-        private void Awake(object mLock)
-        {
-            Monitor.Enter(mLock);
-            Monitor.PulseAll(mLock);
-            Monitor.Exit(mLock);
-        }
     }
 }

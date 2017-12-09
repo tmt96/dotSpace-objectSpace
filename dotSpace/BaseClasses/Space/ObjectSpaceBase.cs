@@ -23,11 +23,13 @@ namespace dotSpace.BaseClasses.Space
         {
             var bucket = GetBucket<T>();
             var result = GetP<T>();
+            Monitor.Enter(bucket);
             while (result == null)
             {
-                Wait(bucket);
+                Monitor.Wait(bucket);
                 result = GetP<T>();
             }
+            Monitor.Exit(bucket);
             return result;
         }
 
@@ -35,11 +37,13 @@ namespace dotSpace.BaseClasses.Space
         {
             var bucket = GetBucket<T>();
             var result = GetP<T>(condition);
+            Monitor.Enter(bucket);
             while (result == null)
             {
-                Wait(bucket);
+                Monitor.Wait(bucket);
                 result = GetP<T>(condition);
             }
+            Monitor.Exit(bucket);
             return result;
         }
 
@@ -68,21 +72,25 @@ namespace dotSpace.BaseClasses.Space
             var bucket = GetBucket<T>();
             var rwLock = GetReaderWriterLock<T>();
 
+            Monitor.Enter(bucket);
             rwLock.EnterWriteLock();
             bucket.Insert(this.GetIndex(bucket.Count), element);
             rwLock.ExitWriteLock();
-            this.Awake(bucket);
+            Monitor.PulseAll(bucket);
+            Monitor.Exit(bucket);
         }
 
         public T Query<T>()
         {
             var bucket = GetBucket<T>();
             var result = QueryP<T>();
+            Monitor.Enter(bucket);
             while (result == null)
             {
-                Wait(bucket);
+                Monitor.Wait(bucket);
                 result = QueryP<T>();
             }
+            Monitor.Exit(bucket);
             return result;
         }
 
@@ -90,11 +98,13 @@ namespace dotSpace.BaseClasses.Space
         {
             var bucket = GetBucket<T>();
             var result = QueryP<T>(condition);
+            Monitor.Enter(bucket);
             while (result == null)
             {
-                Wait(bucket);
+                Monitor.Wait(bucket);
                 result = QueryP<T>(condition);
             }
+            Monitor.Exit(bucket);
             return result;
         }
 
@@ -176,19 +186,6 @@ namespace dotSpace.BaseClasses.Space
         private List<T> GetBucket<T>()
         {
             return buckets.GetOrAdd(typeof(T), new List<T>()) as List<T>;
-        }
-
-        private void Wait(object _lock)
-        {
-            Monitor.Enter(_lock);
-            Monitor.Wait(_lock);
-            Monitor.Exit(_lock);
-        }
-        private void Awake(object _lock)
-        {
-            Monitor.Enter(_lock);
-            Monitor.PulseAll(_lock);
-            Monitor.Exit(_lock);
         }
     }
 }
