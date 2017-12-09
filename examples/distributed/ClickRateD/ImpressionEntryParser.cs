@@ -16,8 +16,6 @@ namespace ClickRate
         {
 			Console.WriteLine("Start impression parser");
             var endSignal = false;
-
-			int max = 0;
 			
             while (true)
             {
