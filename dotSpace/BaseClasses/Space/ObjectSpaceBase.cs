@@ -211,25 +211,71 @@ namespace dotSpace.BaseClasses.Space
 
         private T RemoveFirst<T>(Func<T, bool> condition)
         {
-            var objectCollection = GetObjectCollection<T>();
+            var typeEntry = GetTypeEntry<T>();
+            var objectCollection = typeEntry.ObjectCollection;
+            var result = RemoveFirstNoSubtype<T>(condition, objectCollection);
+            if (result != null)
+            {
+                return result;
+            }
 
-            objectCollection.ObjectLock.EnterWriteLock();
-            var element = objectCollection.ObjectList.FirstOrDefault(condition);
-            objectCollection.ObjectList.Remove(element);
-            objectCollection.ObjectLock.ExitWriteLock();
+            var subtypeCollection = typeEntry.SubtypeCollection;
+            var subtypeLock = subtypeCollection.TypeLock;
+            subtypeLock.EnterReadLock();
+            var subtypeEntryList = subtypeCollection.TypeList.Select(type => typeEntryDict[type]).ToList();
+            subtypeLock.ExitReadLock();
+
+            return subtypeEntryList
+                .Select(l => RemoveFirstNoSubtype<T>(
+                    condition, (l as OSBEntry<T>).ObjectCollection))
+                .Where(element => element != null)
+                .FirstOrDefault();
+        }
+
+        private T RemoveFirstNoSubtype<T>(Func<T, bool> condition, OSBObjectCollection<T> collection)
+        {
+            var bucket = collection.ObjectList;
+            var rwLock = collection.ObjectLock;
+
+            rwLock.EnterWriteLock();
+            var element = bucket.FirstOrDefault(condition);
+            if (element != null) 
+            {
+                bucket.Remove(element);
+            }
+            rwLock.ExitWriteLock();
             return element;
         }
 
         private IEnumerable<T> RemoveAll<T>(Func<T, bool> condition)
         {
-            var objectCollection = GetObjectCollection<T>();
+            var entry = GetTypeEntry<T>();
+            var objectCollection = entry.ObjectCollection;
+            var list = RemoveAllNoSubtype<T>(condition, objectCollection);
 
-            objectCollection.ObjectLock.EnterWriteLock();
-            var elements = objectCollection.ObjectList.Where(condition);
+            var subtypeCollection = entry.SubtypeCollection;
+            var subtypeLock = subtypeCollection.TypeLock;
+            subtypeLock.EnterReadLock();
+            var subtypeEntryList = subtypeCollection.TypeList.Select(type => typeEntryDict[type]).ToList();
+            subtypeLock.ExitReadLock();
+
+            list.Concat(
+                subtypeEntryList.SelectMany(
+                    l => RemoveAllNoSubtype<T>(
+                        condition, (l as OSBEntry<T>).ObjectCollection)));
+            return list;
+        }
+
+        private IEnumerable<T> RemoveAllNoSubtype<T>(Func<T, bool> condition, OSBObjectCollection<T> collection)
+        {
+            var rwLock = collection.ObjectLock;
+            var bucket = collection.ObjectList;
+            rwLock.EnterWriteLock();
+            var element = bucket.Where(condition);
             var pred = new Predicate<T>(condition);
-            objectCollection.ObjectList.RemoveAll(pred);
-            objectCollection.ObjectLock.ExitWriteLock();
-            return elements;
+            bucket.RemoveAll(pred);
+            rwLock.ExitWriteLock();
+            return element;
         }
 
 
@@ -269,9 +315,7 @@ namespace dotSpace.BaseClasses.Space
         {
             var entry = GetTypeEntry<T>();
             var objectCollection = entry.ObjectCollection;
-            objectCollection.ObjectLock.EnterReadLock();
-            var list = objectCollection.ObjectList.Where(condition);
-            objectCollection.ObjectLock.ExitReadLock();
+            var list = FindAllNoSubtype<T>(condition, objectCollection);
 
             var subtypeCollection = entry.SubtypeCollection;
             var subtypeLock = subtypeCollection.TypeLock;
