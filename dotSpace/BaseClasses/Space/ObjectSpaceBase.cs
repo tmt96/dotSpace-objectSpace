@@ -138,17 +138,20 @@ namespace dotSpace.BaseClasses.Space
             Monitor.PulseAll(type);
             Monitor.Exit(type);
 
-            foreach (var key in typeEntryDict.Keys)
-            {
-                if (type.IsSubclassOf(key))
-                {
-                    SetSubtype(type, key);
-                }
-                else if (key.IsSubclassOf(type))
-                {
-                    SetSubtype(key, type);
-                }
-            }
+	    if(!wasAdded)
+	    {
+		foreach (var key in typeEntryDict.Keys)
+		{
+		    if (type.IsSubclassOf(key))
+		    {
+			SetSubtype(key, type);
+		    }
+		    else if (key.IsSubclassOf(type))
+		    {
+			SetSubtype(type, key);
+		    }
+		}
+	    }
 
             supertypeCollection.TypeLock.EnterReadLock();
             foreach (var t in supertypeCollection.TypeList)
@@ -214,19 +217,19 @@ namespace dotSpace.BaseClasses.Space
             var typeEntry = GetTypeEntry<T>();
             var objectCollection = typeEntry.ObjectCollection;
             var result = RemoveFirstNoSubtype<T>(condition, objectCollection);
-            if (result != null)
+	     if (result != null)
             {
                 return result;
             }
 
-            var subtypeCollection = typeEntry.SubtypeCollection;
+	     var subtypeCollection = typeEntry.SubtypeCollection;
             var subtypeLock = subtypeCollection.TypeLock;
             subtypeLock.EnterReadLock();
             var subtypeEntryList = subtypeCollection.TypeList.Select(type => typeEntryDict[type]).ToList();
             subtypeLock.ExitReadLock();
 
             return subtypeEntryList
-                .Select(l => RemoveFirstNoSubtype<T>(
+		 .Select(l => RemoveFirstNoSubtype<T>(
                     condition, (l as OSBEntry<T>).ObjectCollection))
                 .Where(element => element != null)
                 .FirstOrDefault();
