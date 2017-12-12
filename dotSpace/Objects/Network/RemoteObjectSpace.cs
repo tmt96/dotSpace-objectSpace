@@ -15,7 +15,7 @@ using System.Net.Sockets;
 namespace dotSpace.Objects.Network
 {
 
-	public sealed class RemoteObjectSpace : IObjectSpace
+	public sealed class RemoteObjectSpace : IObjectSpaceSimple
 	{
 
 		private IConnectionMode mode;
@@ -34,73 +34,37 @@ namespace dotSpace.Objects.Network
 
 		public T Get<T>()
 		{
-			return Get<T>(o=>true);
-		}
-
-        public T Get<T>(Func<T, bool> condition)
-		{
-			object[] condArray = new object[1] {condition};
-			GetRequest request = new GetRequest(this.GetSource(), this.GetSessionId(), this.connectionString.Target, condArray);
-            return (T)this.GetMode()?.PerformRequest<GetResponse>(request).Result[0];
+			GetRequest request = new GetRequest(this.GetSource(), this.GetSessionId(), this.connectionString.Target, null);
+			return (T)this.GetMode()?.PerformRequest<GetResponse>(request).Result[0];
 		}
 
         public T GetP<T>()
 		{
-			return GetP<T>(o=>true);
-		}
-
-        public T GetP<T>(Func<T, bool> condition)
-		{
-			object[] condArray = new object[1] {condition};
-			GetPRequest request = new GetPRequest(this.GetSource(), this.GetSessionId(), this.connectionString.Target, condArray);
+			GetPRequest request = new GetPRequest(this.GetSource(), this.GetSessionId(), this.connectionString.Target, null);
             return (T)this.GetMode()?.PerformRequest<GetPResponse>(request).Result[0];
-		}
+		}			
 
         public IEnumerable<T> GetAll<T>()
 		{
-			return GetAll<T>(o=>true);
-		}
-
-        public IEnumerable<T> GetAll<T>(Func<T, bool> condition)
-		{
-			object[] condArray = new object[1] {condition};
-			GetAllRequest request = new GetAllRequest(this.GetSource(), this.GetSessionId(), this.connectionString.Target, condArray);
+			GetAllRequest request = new GetAllRequest(this.GetSource(), this.GetSessionId(), this.connectionString.Target, null);
 			return this.GetMode()?.PerformRequest<GetAllResponse>(request).Result.Select(x => (T)x[0]);
 		}
 
 		public T Query<T>()
 		{
-			return Query<T>(o=>true);
-		}
-
-		public T Query<T>(Func<T, bool> condition)
-		{
-			object[] condArray = new object[1] {condition};
-			QueryRequest request = new QueryRequest(this.GetSource(), this.GetSessionId(), this.connectionString.Target, condArray);
+			QueryRequest request = new QueryRequest(this.GetSource(), this.GetSessionId(), this.connectionString.Target, null);
             return (T)this.GetMode()?.PerformRequest<QueryResponse>(request).Result[0];
 		}
 
 		public T QueryP<T>()
 		{
-			return QueryP<T>(o=>true);
-		}
-
-		public T QueryP<T>(Func<T, bool> condition)
-		{
-			object[] condArray = new object[1] {condition};
-			QueryPRequest request = new QueryPRequest(this.GetSource(), this.GetSessionId(), this.connectionString.Target, condArray);
+			QueryPRequest request = new QueryPRequest(this.GetSource(), this.GetSessionId(), this.connectionString.Target, null);
             return (T)this.GetMode()?.PerformRequest<QueryPResponse>(request).Result[0];
 		}
 
         public IEnumerable<T> QueryAll<T>()
 		{
-			return QueryAll<T>(o=>true);
-		}
-
-        public IEnumerable<T> QueryAll<T>(Func<T, bool> condition)
-		{
-			object[] condArray = new object[1] {condition};
-			QueryAllRequest request = new QueryAllRequest(this.GetSource(), this.GetSessionId(), this.connectionString.Target, condArray);
+			QueryAllRequest request = new QueryAllRequest(this.GetSource(), this.GetSessionId(), this.connectionString.Target, null);
 			return this.GetMode()?.PerformRequest<QueryAllResponse>(request).Result.Select(x => (T)x[0]);
 		}
 

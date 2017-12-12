@@ -20,7 +20,7 @@ namespace dotSpace.Objects.Network
         /////////////////////////////////////////////////////////////////////////////////////////////
         #region // Fields
 
-        private IObjectRepository repository;
+        private IObjectRepositorySimple repository;
         private Dictionary<Type, Func<IMessage, IMessage>> operationMap;
 
         #endregion
@@ -31,7 +31,7 @@ namespace dotSpace.Objects.Network
         /// <summary>
         /// Initializes a new instances of the OperationMap class.
         /// </summary>
-        public ObjectOperationMap(IObjectRepository repository)
+        public ObjectOperationMap(IObjectRepositorySimple repository)
         {
             this.repository = repository;
             this.operationMap = new Dictionary<Type, Func<IMessage, IMessage>>();
@@ -70,73 +70,73 @@ namespace dotSpace.Objects.Network
 
         private IMessage PerformGet<T>(IMessage request)
         {
-            IObjectSpace ts = this.repository.GetSpace(request.Target);
+            IObjectSpaceSimple ts = this.repository.GetSpace(request.Target);
             if (ts != null)
             {
                 GetRequest getReq = (GetRequest)request;
-                T result = ts.Get<T>((Func<T, bool>) getReq.Template[0]);
+                T result = ts.Get<T>();
                 return new GetResponse(request.Source, request.Session, request.Target, new object[1] {result}, StatusCode.OK, StatusMessage.OK);
             }
             return new GetResponse(request.Source, request.Session, request.Target, null, StatusCode.NOT_FOUND, StatusMessage.NOT_FOUND);
         }
         private IMessage PerformGetP<T>(IMessage request)
         {
-            IObjectSpace ts = this.repository.GetSpace(request.Target);
+            IObjectSpaceSimple ts = this.repository.GetSpace(request.Target);
             if (ts != null)
             {
                 GetPRequest getReq = (GetPRequest)request;
-                T result = ts.GetP<T>((Func<T, bool>) getReq.Template[0]);
+                T result = ts.GetP<T>();
                 return new GetPResponse(request.Source, request.Session, request.Target, new object[1] {result}, StatusCode.OK, StatusMessage.OK);
             }
             return new GetPResponse(request.Source, request.Session, request.Target, null, StatusCode.NOT_FOUND, StatusMessage.NOT_FOUND);
         }
         private IMessage PerformGetAll<T>(IMessage request)
         {
-            IObjectSpace ts = this.repository.GetSpace(request.Target);
+            IObjectSpaceSimple ts = this.repository.GetSpace(request.Target);
             if (ts != null)
             {
                 GetAllRequest getReq = (GetAllRequest)request;
-                IEnumerable<T> results = ts.GetAll<T>((Func<T, bool>) getReq.Template[0]);
+                IEnumerable<T> results = ts.GetAll<T>();
                 return new GetAllResponse(request.Source, request.Session, request.Target, results.Select(x => new object[1] {x}), StatusCode.OK, StatusMessage.OK);
             }
             return new GetAllResponse(request.Source, request.Session, request.Target, null, StatusCode.NOT_FOUND, StatusMessage.NOT_FOUND);
         }
         private IMessage PerformQuery<T>(IMessage request)
         {
-            IObjectSpace ts = this.repository.GetSpace(request.Target);
+            IObjectSpaceSimple ts = this.repository.GetSpace(request.Target);
             if (ts != null)
             {
                 QueryRequest getReq = (QueryRequest)request;
-                T result = ts.Query<T>((Func<T, bool>) getReq.Template[0]);
+                T result = ts.Query<T>();
                 return new QueryResponse(request.Source, request.Session, request.Target, new object[1] {result}, StatusCode.OK, StatusMessage.OK);
             }
             return new QueryResponse(request.Source, request.Session, request.Target, null, StatusCode.NOT_FOUND, StatusMessage.NOT_FOUND);
         }
         private IMessage PerformQueryP<T>(IMessage request)
         {
-            IObjectSpace ts = this.repository.GetSpace(request.Target);
+            IObjectSpaceSimple ts = this.repository.GetSpace(request.Target);
             if (ts != null)
             {
                 QueryPRequest getReq = (QueryPRequest)request;
-                T result = ts.QueryP<T>((Func<T, bool>) getReq.Template[0]);
+                T result = ts.QueryP<T>();
                 return new QueryPResponse(request.Source, request.Session, request.Target, new object[1] {result}, StatusCode.OK, StatusMessage.OK);
             }
             return new QueryPResponse(request.Source, request.Session, request.Target, null, StatusCode.NOT_FOUND, StatusMessage.NOT_FOUND);
         }
         private IMessage PerformQueryAll<T>(IMessage request)
         {
-            IObjectSpace ts = this.repository.GetSpace(request.Target);
+            IObjectSpaceSimple ts = this.repository.GetSpace(request.Target);
             if (ts != null)
             {
                 QueryAllRequest getReq = (QueryAllRequest)request;
-                IEnumerable<T> results = ts.QueryAll<T>((Func<T, bool>) getReq.Template[0]);
+                IEnumerable<T> results = ts.QueryAll<T>();
                 return new QueryAllResponse(request.Source, request.Session, request.Target, results.Select(x => new object[1] {x}), StatusCode.OK, StatusMessage.OK);
             }
             return new QueryAllResponse(request.Source, request.Session, request.Target, null, StatusCode.NOT_FOUND, StatusMessage.NOT_FOUND);
         }
         private IMessage PerformPut<T>(IMessage request)
         {
-            IObjectSpace ts = this.repository.GetSpace(request.Target);
+            IObjectSpaceSimple ts = this.repository.GetSpace(request.Target);
             if (ts != null)
             {
                 PutRequest putReq = (PutRequest)request;

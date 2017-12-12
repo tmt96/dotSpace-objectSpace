@@ -57,7 +57,6 @@ namespace dotSpace.Objects.Network.Protocols
             catch (Exception e)
             {
                 this.client.Close();
-				Console.WriteLine(e);
             }
             return null;
         }
@@ -69,9 +68,7 @@ namespace dotSpace.Objects.Network.Protocols
         {
             try
             {
-				Console.WriteLine(message is RequestBase);
                 string msg = encoder.Encode(message);
-				Console.WriteLine("sending " + msg);
                 writer.WriteLine(msg);
             }
             catch (Exception e)
