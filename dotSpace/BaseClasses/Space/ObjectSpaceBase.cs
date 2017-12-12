@@ -5,65 +5,16 @@ using dotSpace.Interfaces;
 using System.Threading;
 using System.Linq;
 using System.Collections.Concurrent;
+using dotSpace.BaseClasses.Utility;
 
 namespace dotSpace.BaseClasses.Space
 {
-    class OSBObjectCollection<T>
-    {
-        internal ReaderWriterLockSlim ObjectLock;
-        internal List<T> ObjectList {get; }
-
-        internal OSBObjectCollection(List<T> objectList = null, ReaderWriterLockSlim objectLock = null)
-        {
-            this.ObjectList = objectList ?? new List<T>();
-            this.ObjectLock = objectLock ?? new ReaderWriterLockSlim();
-        }
-    }
-
-    class OSBTypeCollection
-    {
-        internal ReaderWriterLockSlim TypeLock {get; }
-        internal List<Type> TypeList { get; }
-
-        internal OSBTypeCollection(List<Type> typeList = null, ReaderWriterLockSlim typeLock = null)
-        {
-            this.TypeList = typeList ?? new List<Type>();
-            this.TypeLock = typeLock ?? new ReaderWriterLockSlim();
-        }
-
-        internal void AddType(Type t)
-        {
-            TypeLock.EnterWriteLock();
-            TypeList.Add(t);
-            TypeLock.ExitWriteLock();
-        }
-    }
-
-    abstract class OSBEntry
-    {
-        protected internal OSBTypeCollection SubtypeCollection { get; protected set; }
-
-        protected internal OSBTypeCollection SupertypeCollection { get; protected set; }
-    }
-
-    class OSBEntry<T> : OSBEntry
-    {   
-        internal OSBObjectCollection<T> ObjectCollection {get;}
-
-        internal OSBEntry(OSBObjectCollection<T> objectCollection = null, OSBTypeCollection subtypeCollection = null, OSBTypeCollection supertypeCollection = null)
-        {
-            this.ObjectCollection = objectCollection ?? new OSBObjectCollection<T>();
-            SubtypeCollection = subtypeCollection ?? new OSBTypeCollection();
-            SupertypeCollection = supertypeCollection ?? new OSBTypeCollection();
-        }
-    }
 
     public abstract class ObjectSpaceBase : IObjectSpace
     {
         // private readonly ConcurrentDictionary<Type, IList> buckets;
         // private readonly ConcurrentDictionary<Type, (ReaderWriterLockSlim objectLock, ReaderWriterLockSlim subtypeLock)> bucketLocks;
         // private readonly ConcurrentDictionary<Type, IEnumerable<Type>> subtypesDict;
-
         private readonly ConcurrentDictionary<Type, OSBEntry> typeEntryDict;
 
         public ObjectSpaceBase()
@@ -138,20 +89,20 @@ namespace dotSpace.BaseClasses.Space
             Monitor.PulseAll(type);
             Monitor.Exit(type);
 
-	    if(!wasAdded)
-	    {
-		foreach (var key in typeEntryDict.Keys)
-		{
-		    if (type.IsSubclassOf(key))
-		    {
-			SetSubtype(key, type);
-		    }
-		    else if (key.IsSubclassOf(type))
-		    {
-			SetSubtype(type, key);
-		    }
-		}
-	    }
+        if(!wasAdded)
+        {
+        foreach (var key in typeEntryDict.Keys)
+        {
+            if (type.IsSubclassOf(key))
+            {
+            SetSubtype(key, type);
+            }
+            else if (key.IsSubclassOf(type))
+            {
+            SetSubtype(type, key);
+            }
+        }
+        }
 
             supertypeCollection.TypeLock.EnterReadLock();
             foreach (var t in supertypeCollection.TypeList)
@@ -217,22 +168,32 @@ namespace dotSpace.BaseClasses.Space
             var typeEntry = GetTypeEntry<T>();
             var objectCollection = typeEntry.ObjectCollection;
             var result = RemoveFirstNoSubtype<T>(condition, objectCollection);
-	     if (result != null)
+         if (result != null)
             {
                 return result;
             }
 
-	     var subtypeCollection = typeEntry.SubtypeCollection;
+         var subtypeCollection = typeEntry.SubtypeCollection;
             var subtypeLock = subtypeCollection.TypeLock;
             subtypeLock.EnterReadLock();
             var subtypeEntryList = subtypeCollection.TypeList.Select(type => typeEntryDict[type]).ToList();
             subtypeLock.ExitReadLock();
 
-            return subtypeEntryList
-		 .Select(l => RemoveFirstNoSubtype<T>(
-                    condition, (l as OSBEntry<T>).ObjectCollection))
-                .Where(element => element != null)
-                .FirstOrDefault();
+            foreach (var l in subtypeEntryList)
+            {
+                var temp = l as OSBEntry<T>;
+                if (temp == null)
+                {
+                    Console.WriteLine("CANNOT CONVERT!!");
+                }
+            }
+
+            var allEntry = subtypeEntryList
+                .Select(l => RemoveFirstNoSubtype<T>(
+                    condition, (l as OSBEntry<T>).ObjectCollection));
+            var satisfied = allEntry.Where(element => element != null);
+            Console.WriteLine(allEntry.Count());
+            return satisfied.FirstOrDefault();
         }
 
         private T RemoveFirstNoSubtype<T>(Func<T, bool> condition, OSBObjectCollection<T> collection)
