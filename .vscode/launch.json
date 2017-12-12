@@ -109,6 +109,19 @@
         },
 
         {
+            "name": "Object Space Example 2",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/examples/ObjectSpaceExamples/Example2/bin/Debug/netcoreapp2.0/Example2.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopAtEntry": false,
+            "internalConsoleOptions": "openOnSessionStart"
+        },
+
+        {
             "name": "ClickRate",
             "type": "coreclr",
             "request": "launch",
