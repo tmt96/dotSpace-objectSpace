@@ -58,10 +58,12 @@ namespace dotSpace.Objects.Utility
         /// </summary>
         public void Put(IMessage message)
         {
+            Monitor.Enter(messages);
             rwLock.EnterWriteLock();
             messages.Add(message.Session, message);
             rwLock.ExitWriteLock();
-            this.Awake(messages);
+            Monitor.PulseAll(messages);
+            Monitor.Exit(messages);
         }
 
         #endregion
@@ -72,10 +74,12 @@ namespace dotSpace.Objects.Utility
         private IMessage WaitForSession(string key)
         {
             IMessage t;
+            Monitor.Enter(messages);
             while (((t = this.Find(key)) == null))
             {
-                this.Wait(messages);
+                Monitor.Wait(messages);
             }
+            Monitor.Exit(messages);
             return t;
         }
         private IMessage Find(string key)
@@ -85,20 +89,6 @@ namespace dotSpace.Objects.Utility
             rwLock.ExitReadLock();
             return msg;
         }
-
-        private void Wait(object _lock)
-        {
-            Monitor.Enter(_lock);
-            Monitor.Wait(_lock);
-            Monitor.Exit(_lock);
-        }
-        private void Awake(object _lock)
-        {
-            Monitor.Enter(_lock);
-            Monitor.PulseAll(_lock);
-            Monitor.Exit(_lock);
-        }
-
         #endregion
     }
 }

@@ -4,6 +4,7 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+        
         {
             "name": "Example 1",
             "type": "coreclr",
@@ -108,6 +109,19 @@
         },
 
         {
+            "name": "Object Space Example 2",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/examples/ObjectSpaceExamples/Example2/bin/Debug/netcoreapp2.0/Example2.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopAtEntry": false,
+            "internalConsoleOptions": "openOnSessionStart"
+        },
+
+        {
             "name": "ClickRate",
             "type": "coreclr",
             "request": "launch",
@@ -116,7 +130,24 @@
             "args": [
                 "${workspaceFolder}/examples/ClickRate/dataset_merged/impressions_merged/impressions.log",
                 "${workspaceFolder}/examples/ClickRate/dataset_merged/clicks_merged/clicks.log",
-                "${workplaceFolder}/examples/ClickRate/output.txt"
+                "${workspaceFolder}/examples/ClickRate/output.txt"
+            ],
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopAtEntry": false,
+            "internalConsoleOptions": "openOnSessionStart"
+        },
+
+        {
+            "name": "ClickRateDistributed",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/examples/distributed/ClickRateD/bin/Debug/netcoreapp2.0/ClickRateD.dll",
+            "args": [
+                "${workspaceFolder}/examples/ClickRate/dataset_merged/impressions_merged/impressions.log",
+                "${workspaceFolder}/examples/ClickRate/dataset_merged/clicks_merged/clicks.log",
+                "${workspaceFolder}/examples/distributed/ClickRateD/output.txt"
             ],
             "cwd": "${workspaceFolder}",
             "console": "internalConsole",
