@@ -7,22 +7,10 @@ using dotSpace.Objects.Network;
 
 namespace ObjectSpace.Example3
 {
-    public class Program : ObjectSpaceAgentBase
+    public class Program
     {
-        public Program(string name, IObjectSpace space) : base(name, space)
-        {
-        }
 
         public static int PhilosophersCount {get; set;}
-
-        protected override void DoWork()
-        {
-            Console.WriteLine("start");
-            for (var i = 0; i < PhilosophersCount; i++)
-            {
-                Put<Fork>(new Fork{Id = i});
-            }
-        }
 
         static void Main(string[] args)
         {
@@ -31,14 +19,17 @@ namespace ObjectSpace.Example3
 			repository.AddGate("tcp://127.0.0.1:8989?KEEP");
 			repository.AddSpace("sos", new SequentialObjectSpace());
 			IObjectSpace remotespace = new RemoteObjectSpace(("tcp://127.0.0.1:8989/sos?KEEP"));
-			
-			var program = new Program("main", space);
-            program.Start();
+
+			Console.WriteLine("start");
+            for (var i = 0; i < PhilosophersCount; i++)
+            {
+                repository.Put<Fork>("sos", new Fork{Id = i});
+            }
 
             List<ObjectSpaceAgentBase> agents = new List<ObjectSpaceAgentBase>();
             for (var i = 0; i < PhilosophersCount; i++)
             {
-                var philosopher = new Philosopher("Philosopher " + i, i, space);
+                var philosopher = new Philosopher("Philosopher " + i, i, remotespace);
                 philosopher.Start();
             }
         }
