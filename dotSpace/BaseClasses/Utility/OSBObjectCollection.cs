@@ -9,6 +9,7 @@ namespace dotSpace.BaseClasses.Utility
     {
         internal ReaderWriterLockSlim ObjectLock;
         internal List<T> ObjectList { get; }
+        internal int Size => ObjectList.Count;
 
         internal OSBObjectCollection(List<T> objectList = null, ReaderWriterLockSlim objectLock = null)
         {
@@ -54,16 +55,19 @@ namespace dotSpace.BaseClasses.Utility
             return result;
         }
 
-        internal T Remove(Func<T, bool> condition>)
+        internal T Remove(Func<T, bool> condition)
         {
             ObjectLock.EnterWriteLock();
             var result = ObjectList.FirstOrDefault(condition);
-            ObjectList.Remove(result);
+            if (result != null)
+            {
+                ObjectList.Remove(result);
+            }
             ObjectLock.ExitWriteLock();
             return result;
         }
 
-        internal IEnumerable<T> RemoveAll(Func<T, bool> condition>)
+        internal IEnumerable<T> RemoveAll(Func<T, bool> condition)
         {
             ObjectLock.EnterWriteLock();
             var result = ObjectList.Where(condition);

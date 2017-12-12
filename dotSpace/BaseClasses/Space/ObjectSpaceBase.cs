@@ -12,23 +12,17 @@ namespace dotSpace.BaseClasses.Space
 
     public abstract class ObjectSpaceBase : IObjectSpace
     {
-        // private readonly ConcurrentDictionary<Type, IList> buckets;
-        // private readonly ConcurrentDictionary<Type, (ReaderWriterLockSlim objectLock, ReaderWriterLockSlim subtypeLock)> bucketLocks;
-        // private readonly ConcurrentDictionary<Type, IEnumerable<Type>> subtypesDict;
         private readonly ConcurrentDictionary<Type, OSBEntry> typeEntryDict;
 
         public ObjectSpaceBase()
         {
-            // buckets = new ConcurrentDictionary<Type, IList>();
-            // bucketLocks = new ConcurrentDictionary<Type, (ReaderWriterLockSlim, ReaderWriterLockSlim)>();
-            // subtypesDict = new ConcurrentDictionary<Type, IEnumerable<Type>>();
             typeEntryDict = new ConcurrentDictionary<Type, OSBEntry>();
         }
 
         public T Get<T>()
         {
-            var result = GetP<T>();
             Monitor.Enter(typeof(T));
+            var result = GetP<T>();
             while (result == null)
             {
                 Monitor.Wait(typeof(T));
@@ -40,8 +34,8 @@ namespace dotSpace.BaseClasses.Space
 
         public T Get<T>(Func<T, bool> condition)
         {
-            var result = GetP<T>(condition);
             Monitor.Enter(typeof(T));
+            var result = GetP<T>(condition);
             while (result == null)
             {
                 Monitor.Wait(typeof(T));
@@ -77,32 +71,27 @@ namespace dotSpace.BaseClasses.Space
             var wasAdded = typeEntryDict.ContainsKey(type);
 
             var entry = GetTypeEntry<T>();
-            var objectCollection = entry.ObjectCollection;
             var supertypeCollection = entry.SupertypeCollection;
-            var bucket = objectCollection.ObjectList;
-            var rwLock = objectCollection.ObjectLock;
 
             Monitor.Enter(type);
-            rwLock.EnterWriteLock();
-            bucket.Insert(this.GetIndex(bucket.Count), element);
-            rwLock.ExitWriteLock();
+            entry.Add(element, GetIndex(entry.Size));
             Monitor.PulseAll(type);
             Monitor.Exit(type);
 
-        if(!wasAdded)
-        {
-        foreach (var key in typeEntryDict.Keys)
-        {
-            if (type.IsSubclassOf(key))
+            if(!wasAdded)
             {
-            SetSubtype(key, type);
+                foreach (var key in typeEntryDict.Keys)
+                {
+                    if (type.IsSubclassOf(key))
+                    {
+                        SetSubtype(key, type);
+                    }
+                    else if (key.IsSubclassOf(type))
+                    {
+                        SetSubtype(type, key);
+                    }
+                }
             }
-            else if (key.IsSubclassOf(type))
-            {
-            SetSubtype(type, key);
-            }
-        }
-        }
 
             supertypeCollection.TypeLock.EnterReadLock();
             foreach (var t in supertypeCollection.TypeList)
@@ -116,8 +105,8 @@ namespace dotSpace.BaseClasses.Space
 
         public T Query<T>()
         {
-            var result = QueryP<T>();
             Monitor.Enter(typeof(T));
+            var result = QueryP<T>();
             while (result == null)
             {
                 Monitor.Wait(typeof(T));
@@ -129,8 +118,8 @@ namespace dotSpace.BaseClasses.Space
 
         public T Query<T>(Func<T, bool> condition)
         {
-            var result = QueryP<T>(condition);
             Monitor.Enter(typeof(T));
+            var result = QueryP<T>(condition);
             while (result == null)
             {
                 Monitor.Wait(typeof(T));
@@ -142,7 +131,7 @@ namespace dotSpace.BaseClasses.Space
 
         public IEnumerable<T> QueryAll<T>()
         {
-            return GetObjectCollection<T>().ObjectList;
+            return GetTypeEntry<T>().ObjectCollection.ObjectList;
         }
 
         public IEnumerable<T> QueryAll<T>(Func<T, bool> condition)
@@ -166,56 +155,27 @@ namespace dotSpace.BaseClasses.Space
         private T RemoveFirst<T>(Func<T, bool> condition)
         {
             var typeEntry = GetTypeEntry<T>();
-            var objectCollection = typeEntry.ObjectCollection;
-            var result = RemoveFirstNoSubtype<T>(condition, objectCollection);
-         if (result != null)
+            var result = typeEntry.Remove(condition);
+            if (result != null)
             {
                 return result;
             }
 
-         var subtypeCollection = typeEntry.SubtypeCollection;
+            var subtypeCollection = typeEntry.SubtypeCollection;
             var subtypeLock = subtypeCollection.TypeLock;
             subtypeLock.EnterReadLock();
             var subtypeEntryList = subtypeCollection.TypeList.Select(type => typeEntryDict[type]).ToList();
             subtypeLock.ExitReadLock();
 
-            foreach (var l in subtypeEntryList)
-            {
-                var temp = l as OSBEntry<T>;
-                if (temp == null)
-                {
-                    Console.WriteLine("CANNOT CONVERT!!");
-                }
-            }
-
-            var allEntry = subtypeEntryList
-                .Select(l => RemoveFirstNoSubtype<T>(
-                    condition, (l as OSBEntry<T>).ObjectCollection));
+            var allEntry = subtypeEntryList.Select(l => l.Remove(condition));
             var satisfied = allEntry.Where(element => element != null);
-            Console.WriteLine(allEntry.Count());
             return satisfied.FirstOrDefault();
-        }
-
-        private T RemoveFirstNoSubtype<T>(Func<T, bool> condition, OSBObjectCollection<T> collection)
-        {
-            var bucket = collection.ObjectList;
-            var rwLock = collection.ObjectLock;
-
-            rwLock.EnterWriteLock();
-            var element = bucket.FirstOrDefault(condition);
-            if (element != null) 
-            {
-                bucket.Remove(element);
-            }
-            rwLock.ExitWriteLock();
-            return element;
         }
 
         private IEnumerable<T> RemoveAll<T>(Func<T, bool> condition)
         {
             var entry = GetTypeEntry<T>();
-            var objectCollection = entry.ObjectCollection;
-            var list = RemoveAllNoSubtype<T>(condition, objectCollection);
+            var list = entry.RemoveAll(condition);
 
             var subtypeCollection = entry.SubtypeCollection;
             var subtypeLock = subtypeCollection.TypeLock;
@@ -223,31 +183,16 @@ namespace dotSpace.BaseClasses.Space
             var subtypeEntryList = subtypeCollection.TypeList.Select(type => typeEntryDict[type]).ToList();
             subtypeLock.ExitReadLock();
 
-            list.Concat(
-                subtypeEntryList.SelectMany(
-                    l => RemoveAllNoSubtype<T>(
-                        condition, (l as OSBEntry<T>).ObjectCollection)));
+            list.Concat(subtypeEntryList.SelectMany(
+                            l => l.RemoveAll(condition)));
             return list;
         }
-
-        private IEnumerable<T> RemoveAllNoSubtype<T>(Func<T, bool> condition, OSBObjectCollection<T> collection)
-        {
-            var rwLock = collection.ObjectLock;
-            var bucket = collection.ObjectList;
-            rwLock.EnterWriteLock();
-            var element = bucket.Where(condition);
-            var pred = new Predicate<T>(condition);
-            bucket.RemoveAll(pred);
-            rwLock.ExitWriteLock();
-            return element;
-        }
-
 
         private T Find<T>(Func<T, bool> condition)
         {
             var typeEntry = GetTypeEntry<T>();
             T result;
-            if ((result = FindNoSubtype<T>(condition, typeEntry.ObjectCollection)) != null)
+            if ((result = typeEntry.Get(condition)) != null)
             {
                 return result;
             }
@@ -259,68 +204,37 @@ namespace dotSpace.BaseClasses.Space
             subtypeLock.ExitReadLock();
 
             return subtypeEntryList
-                .Select(l => FindNoSubtype<T>(
-                    condition, (l as OSBEntry<T>).ObjectCollection))
+                .Select(l => l.Get(condition))
                 .Where(element => element != null)
                 .FirstOrDefault();
-        }
-
-        private T FindNoSubtype<T>(Func<T, bool> condition, OSBObjectCollection<T> collection)
-        {
-            var rwLock = collection.ObjectLock;
-            var bucket = collection.ObjectList;
-            rwLock.EnterReadLock();
-            var element = bucket.FirstOrDefault(condition);
-            rwLock.ExitReadLock();
-            return element;
         }
 
         private IEnumerable<T> FindAll<T>(Func<T, bool> condition)
         {
             var entry = GetTypeEntry<T>();
-            var objectCollection = entry.ObjectCollection;
-            var list = FindAllNoSubtype<T>(condition, objectCollection);
+            var list = entry.GetAll(condition);
 
             var subtypeCollection = entry.SubtypeCollection;
             var subtypeLock = subtypeCollection.TypeLock;
             subtypeLock.EnterReadLock();
-            var subtypeEntryList = subtypeCollection.TypeList.Select(type => typeEntryDict[type]).ToList();
+            var subtypeEntryList = subtypeCollection.TypeList.Select(
+                type => typeEntryDict[type]).ToList();
             subtypeLock.ExitReadLock();
 
-            list.Concat(
-                subtypeEntryList.SelectMany(
-                    l => FindAllNoSubtype<T>(
-                        condition, (l as OSBEntry<T>).ObjectCollection)));
+            list.Concat(subtypeEntryList.SelectMany(
+                                l => l.GetAll(condition)));
             return list;
         }
-
-        private IEnumerable<T> FindAllNoSubtype<T>(Func<T, bool> condition, OSBObjectCollection<T> collection)
-        {
-            var rwLock = collection.ObjectLock;
-            var bucket = collection.ObjectList;
-            rwLock.EnterReadLock();
-            var element = bucket.Where(condition);
-            rwLock.ExitReadLock();
-            return element;
-        }
-
 
         private OSBEntry<T> GetTypeEntry<T>()
         {
             return typeEntryDict.GetOrAdd(typeof(T), new OSBEntry<T>()) as OSBEntry<T>;
         }
 
-        private OSBObjectCollection<T> GetObjectCollection<T>() {
-            return GetTypeEntry<T>().ObjectCollection;
-        }
-
         private void SetSubtype(Type supertype, Type subtype)
         {
-            var supertypeSubtypeCollection = typeEntryDict[supertype].SubtypeCollection;
-            supertypeSubtypeCollection.AddType(subtype);
-
-            var subtypeSupertypeCollection = typeEntryDict[subtype].SupertypeCollection;
-            subtypeSupertypeCollection.AddType(supertype);
+            typeEntryDict[supertype].AddSubtype(subtype);
+            typeEntryDict[subtype].AddSupertype(supertype);
         }
     }
 }

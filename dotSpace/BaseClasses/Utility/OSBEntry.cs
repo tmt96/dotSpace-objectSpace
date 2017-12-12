@@ -30,6 +30,7 @@ namespace dotSpace.BaseClasses.Utility
     class OSBEntry<T> : OSBEntry
     {
         internal OSBObjectCollection<T> ObjectCollection { get; }
+        internal int Size  => ObjectCollection.Size;
 
         internal OSBEntry(OSBObjectCollection<T> objectCollection = null, OSBTypeCollection subtypeCollection = null, OSBTypeCollection supertypeCollection = null)
         {
@@ -94,7 +95,7 @@ namespace dotSpace.BaseClasses.Utility
 
         internal override T1 Get<T1>(Func<T1, bool> condition)
         {
-            if (typeof(T).IsAssignableFrom(typeof(T1)))
+            if (typeof(T1).IsAssignableFrom(typeof(T)))
             {
                 return (T1) (object) Get(condition as Func<T, bool>);
             }
@@ -106,7 +107,7 @@ namespace dotSpace.BaseClasses.Utility
 
         internal override IEnumerable<T1> GetAll<T1>(Func<T1, bool> condition)
         {
-            if (typeof(T).IsAssignableFrom(typeof(T1)))
+            if (typeof(T1).IsAssignableFrom(typeof(T)))
             {
                 return (IEnumerable<T1>) GetAll(condition as Func<T, bool>);
             }
@@ -118,19 +119,20 @@ namespace dotSpace.BaseClasses.Utility
 
         internal override T1 Remove<T1>(Func<T1, bool> condition)
         {
-            if (typeof(T).IsAssignableFrom(typeof(T1)))
+            if (typeof(T1).IsAssignableFrom(typeof(T)))
             {
                 return (T1)(object)Remove(condition as Func<T, bool>);
             }
             else
             {
+                Console.WriteLine("Oops");
                 throw new ArgumentException("The value \"" + condition + "\" is not of type \"" + typeof(Func<T, bool>) + "\" and cannot be used.");
             }
         }
 
         internal override IEnumerable<T1> RemoveAll<T1>(Func<T1, bool> condition)
         {
-            if (typeof(T).IsAssignableFrom(typeof(T1)))
+            if (typeof(T1).IsAssignableFrom(typeof(T)))
             {
                 return (IEnumerable<T1>)RemoveAll(condition as Func<T, bool>);
             }

@@ -24,7 +24,7 @@ namespace ObjectSpace.Example2
             {
                 while (true)
                 {					
-                    f = this.Get<Food>(food => food.amount <= 5);
+                    f = this.Get<Food>(food => food.amount < 10);
 
                     // Note how the fields of the tuple t are accessed
 					Console.WriteLine(name + " shopping " + f.amount + " units of " + f.name + "...");
