@@ -1,31 +1,30 @@
 using dotSpace.BaseClasses.Network.Messages;
 using dotSpace.Enumerations;
 using dotSpace.Objects.Json;
-using System;
 
-namespace dotSpace.Objects.Network.Messages.Requests
+namespace dotSpace.Objects.Network.Messages.Responses
 {
     /// <summary>
-    /// Entity representing a message of a GetAll request.
+    /// Entity representing a message of a Query response.
     /// </summary>
-    public sealed class ObjectGetAllRequest<T> : RequestBase
+    public sealed class ObjectQueryResponse<T> : ResponseBase
     {
         /////////////////////////////////////////////////////////////////////////////////////////////
         #region // Constructors
 
         /// <summary>
-        /// Initializes a new instances of the GetAllRequest class.
+        /// Initializes a new instances of the ObjectQueryResponse class.
         /// </summary>
-        public ObjectGetAllRequest()
+        public ObjectQueryResponse()
         {
         }
 
         /// <summary>
-        /// Initializes a new instances of the GetAllRequest class.
+        /// Initializes a new instances of the ObjectQueryResponse class.
         /// </summary>
-        public ObjectGetAllRequest(string source, string session, string target, Func<T, bool> condition) : base(ActionType.GETALL_REQUEST, source, session, target)
+        public ObjectQueryResponse(string source, string session, string target, T result, StatusCode code, string message) : base(ActionType.QUERY_RESPONSE, source, session, target, code, message)
         {
-            this.Condition = condition;
+            this.Result = result;
         }
 
         #endregion
@@ -34,9 +33,9 @@ namespace dotSpace.Objects.Network.Messages.Requests
         #region // Public Properties
 
         /// <summary>
-        /// Gets or sets the underlying array of values constituting the template pattern.
+        /// Gets or sets the underlying array of values constituting the tuple values.
         /// </summary>
-        public Func<T, bool> Condition { get; set; }
+        public T Result { get; set; }
 
         #endregion
 

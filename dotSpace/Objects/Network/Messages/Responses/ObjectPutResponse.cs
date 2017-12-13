@@ -1,42 +1,29 @@
 using dotSpace.BaseClasses.Network.Messages;
 using dotSpace.Enumerations;
-using dotSpace.Objects.Json;
-using System;
 
-namespace dotSpace.Objects.Network.Messages.Requests
+namespace dotSpace.Objects.Network.Messages.Responses
 {
     /// <summary>
-    /// Entity representing a message of a GetAll request.
+    /// Entity representing a message of a Put response.
     /// </summary>
-    public sealed class ObjectGetAllRequest<T> : RequestBase
+    public sealed class ObjectPutResponse<T> : ResponseBase
     {
         /////////////////////////////////////////////////////////////////////////////////////////////
         #region // Constructors
 
         /// <summary>
-        /// Initializes a new instances of the GetAllRequest class.
+        /// Initializes a new instances of the ObjectPutResponse class.
         /// </summary>
-        public ObjectGetAllRequest()
+        public ObjectPutResponse()
         {
         }
 
         /// <summary>
-        /// Initializes a new instances of the GetAllRequest class.
+        /// Initializes a new instances of the ObjectPutResponse class.
         /// </summary>
-        public ObjectGetAllRequest(string source, string session, string target, Func<T, bool> condition) : base(ActionType.GETALL_REQUEST, source, session, target)
+        public ObjectPutResponse(string source, string session, string target, StatusCode code, string message) : base(ActionType.PUT_RESPONSE, source, session, target, code, message)
         {
-            this.Condition = condition;
         }
-
-        #endregion
-
-        /////////////////////////////////////////////////////////////////////////////////////////////
-        #region // Public Properties
-
-        /// <summary>
-        /// Gets or sets the underlying array of values constituting the template pattern.
-        /// </summary>
-        public Func<T, bool> Condition { get; set; }
 
         #endregion
 
