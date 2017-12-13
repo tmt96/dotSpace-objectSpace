@@ -34,45 +34,50 @@ namespace dotSpace.Objects.Network
 
 		public T Get<T>()
 		{
-			GetRequest request = new GetRequest(this.GetSource(), this.GetSessionId(), this.connectionString.Target, null);
-			return (T)this.GetMode()?.PerformRequest<GetResponse>(request).Result[0];
+			var request = new ObjectGetRequest<T>(this.GetSource(), this.GetSessionId(), this.connectionString.Target, null);
+            var mode = this.GetMode();
+			return mode.PerformRequest<ObjectGetResponse<T>>(request).Result;
 		}
 
         public T GetP<T>()
 		{
-			GetPRequest request = new GetPRequest(this.GetSource(), this.GetSessionId(), this.connectionString.Target, null);
-            return (T)this.GetMode()?.PerformRequest<GetPResponse>(request).Result[0];
-		}			
+			var request = new ObjectGetPRequest<T>(this.GetSource(), this.GetSessionId(), this.connectionString.Target, null);
+            var mode = this.GetMode();
+            return mode.PerformRequest<ObjectGetPResponse<T>>(request).Result;
+        }			
 
         public IEnumerable<T> GetAll<T>()
 		{
-			GetAllRequest request = new GetAllRequest(this.GetSource(), this.GetSessionId(), this.connectionString.Target, null);
-			return this.GetMode()?.PerformRequest<GetAllResponse>(request).Result.Select(x => (T)x[0]);
-		}
+			var request = new ObjectGetAllRequest<T>(this.GetSource(), this.GetSessionId(), this.connectionString.Target, null);
+            var mode = this.GetMode();
+            return mode.PerformRequest<ObjectGetAllResponse<T>>(request).Result;
+        }
 
 		public T Query<T>()
 		{
-			QueryRequest request = new QueryRequest(this.GetSource(), this.GetSessionId(), this.connectionString.Target, null);
-            return (T)this.GetMode()?.PerformRequest<QueryResponse>(request).Result[0];
-		}
+			var request = new ObjectQueryRequest<T>(this.GetSource(), this.GetSessionId(), this.connectionString.Target, null);
+            var mode = this.GetMode();
+            return mode.PerformRequest<ObjectQueryResponse<T>>(request).Result;
+        }
 
 		public T QueryP<T>()
 		{
-			QueryPRequest request = new QueryPRequest(this.GetSource(), this.GetSessionId(), this.connectionString.Target, null);
-            return (T)this.GetMode()?.PerformRequest<QueryPResponse>(request).Result[0];
-		}
+            var request = new ObjectQueryPRequest<T>(this.GetSource(), this.GetSessionId(), this.connectionString.Target, null);
+            var mode = this.GetMode();
+            return mode.PerformRequest<ObjectQueryPResponse<T>>(request).Result;
+        }
 
         public IEnumerable<T> QueryAll<T>()
 		{
-			QueryAllRequest request = new QueryAllRequest(this.GetSource(), this.GetSessionId(), this.connectionString.Target, null);
-			return this.GetMode()?.PerformRequest<QueryAllResponse>(request).Result.Select(x => (T)x[0]);
-		}
+            var request = new ObjectQueryAllRequest<T>(this.GetSource(), this.GetSessionId(), this.connectionString.Target, null);
+            var mode = this.GetMode();
+            return mode.PerformRequest<ObjectQueryAllResponse<T>>(request).Result;
+        }
 
         public void Put<T>(T element)
 		{
-			object[] eltArray = new object[1] {element};
-			PutRequest request = new PutRequest(this.GetSource(), this.GetSessionId(), this.connectionString.Target, eltArray);
-            this.GetMode()?.PerformRequest<PutResponse>(request);
+			var request = new ObjectPutRequest<T>(this.GetSource(), this.GetSessionId(), this.connectionString.Target, element);
+            this.GetMode()?.PerformRequest<ObjectPutResponse<T>>(request);
 		}
 
 		private string GetSessionId()
