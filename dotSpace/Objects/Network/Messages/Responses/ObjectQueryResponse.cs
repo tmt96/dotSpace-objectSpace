@@ -22,7 +22,7 @@ namespace dotSpace.Objects.Network.Messages.Responses
         /// <summary>
         /// Initializes a new instances of the ObjectQueryResponse class.
         /// </summary>
-        public ObjectQueryResponse(string source, string session, string target, T result, StatusCode code, string message) : base(ActionType.QUERY_RESPONSE, source, session, target, code, message)
+        public ObjectQueryResponse(string source, string session, string target, T result, StatusCode code, string message) : base(ActionType.OBJECT_QUERY_RESPONSE, source, session, target, code, message)
         {
             this.Result = result;
         }

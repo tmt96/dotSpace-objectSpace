@@ -23,7 +23,7 @@ namespace dotSpace.Objects.Network.Messages.Requests
         /// <summary>
         /// Initializes a new instances of the GetPRequest class.
         /// </summary>
-        public ObjectGetPRequest( string source, string session, string target, Func<T, bool> condition) : base( ActionType.GETP_REQUEST, source, session, target)
+        public ObjectGetPRequest( string source, string session, string target, Func<T, bool> condition) : base( ActionType.OBJECT_GETP_REQUEST, source, session, target)
         {
             this.Condition = condition;
         }

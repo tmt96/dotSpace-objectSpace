@@ -23,7 +23,7 @@ namespace dotSpace.Objects.Network.Messages.Requests
         /// <summary>
         /// Initializes a new instances of the PutRequest class.
         /// </summary>
-        public ObjectPutRequest(string source, string session, string target, T element) : base( ActionType.PUT_REQUEST, source, session, target)
+        public ObjectPutRequest(string source, string session, string target, T element) : base( ActionType.OBJECT_PUT_REQUEST, source, session, target)
         {
             this.Element = element;
         }

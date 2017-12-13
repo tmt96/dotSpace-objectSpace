@@ -23,7 +23,7 @@ namespace dotSpace.Objects.Network.Messages.Responses
         /// <summary>
         /// Initializes a new instances of the ObjectQueryAllResponse class.
         /// </summary>
-        public ObjectQueryAllResponse(string source, string session, string target, IEnumerable<T> result, StatusCode code, string message) : base(ActionType.QUERYALL_RESPONSE, source, session, target, code, message)
+        public ObjectQueryAllResponse(string source, string session, string target, IEnumerable<T> result, StatusCode code, string message) : base(ActionType.OBJECT_QUERYALL_RESPONSE, source, session, target, code, message)
         {
             this.Result = result;
         }

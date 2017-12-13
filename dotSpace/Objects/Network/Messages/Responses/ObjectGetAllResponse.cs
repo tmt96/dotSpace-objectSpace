@@ -25,7 +25,7 @@ namespace dotSpace.Objects.Network.Messages.Responses
         /// <summary>
         /// Initializes a new instances of the ObjectGetAllResponse class.
         /// </summary>
-        public ObjectGetAllResponse(string source, string session, string target, IEnumerable<T> result, StatusCode code, string message) : base(ActionType.GETALL_RESPONSE, source, session, target, code, message)
+        public ObjectGetAllResponse(string source, string session, string target, IEnumerable<T> result, StatusCode code, string message) : base(ActionType.OBJECT_GETALL_RESPONSE, source, session, target, code, message)
         {
             this.Result = result;
         }

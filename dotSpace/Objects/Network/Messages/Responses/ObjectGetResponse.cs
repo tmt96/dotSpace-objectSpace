@@ -22,7 +22,7 @@ namespace dotSpace.Objects.Network.Messages.Responses
         /// <summary>
         /// Initializes a new instances of the ObjectGetResponse class.
         /// </summary>
-        public ObjectGetResponse(string source, string session, string target, T result, StatusCode code, string message) : base(ActionType.GET_RESPONSE, source, session, target, code, message)
+        public ObjectGetResponse(string source, string session, string target, T result, StatusCode code, string message) : base(ActionType.OBJECT_GET_RESPONSE, source, session, target, code, message)
         {
             this.Result = result;
         }

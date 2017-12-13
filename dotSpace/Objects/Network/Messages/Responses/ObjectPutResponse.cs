@@ -21,7 +21,7 @@ namespace dotSpace.Objects.Network.Messages.Responses
         /// <summary>
         /// Initializes a new instances of the ObjectPutResponse class.
         /// </summary>
-        public ObjectPutResponse(string source, string session, string target, StatusCode code, string message) : base(ActionType.PUT_RESPONSE, source, session, target, code, message)
+        public ObjectPutResponse(string source, string session, string target, StatusCode code, string message) : base(ActionType.OBJECT_PUT_RESPONSE, source, session, target, code, message)
         {
         }
 

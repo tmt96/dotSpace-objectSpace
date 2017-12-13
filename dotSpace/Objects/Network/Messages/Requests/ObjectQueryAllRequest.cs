@@ -23,7 +23,7 @@ namespace dotSpace.Objects.Network.Messages.Requests
         /// <summary>
         /// Initializes a new instances of the QueryAllRequest class.
         /// </summary>
-        public ObjectQueryAllRequest( string source, string session, string target, Func<T, bool> condition) : base( ActionType.QUERYALL_REQUEST, source, session, target)
+        public ObjectQueryAllRequest( string source, string session, string target, Func<T, bool> condition) : base( ActionType.OBJECT_QUERYALL_REQUEST, source, session, target)
         {
             this.Condition = condition;
         }
