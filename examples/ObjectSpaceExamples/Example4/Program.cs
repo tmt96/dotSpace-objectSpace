@@ -14,7 +14,10 @@ namespace ObjectSpace.Example4
 
 			ObjectSpaceRepository repository = new ObjectSpaceRepository();
 			repository.AddGate("tcp://127.0.0.1:8989?KEEP");
-			repository.AddSpace("sos", new SequentialObjectSpaceSimple());
+            repository.AddGate("tcp://127.0.0.1:8988?KEEP");
+            repository.AddGate("tcp://127.0.0.1:8987?KEEP");
+
+            repository.AddSpace("sos", new SequentialObjectSpace());
 			IObjectSpaceSimple remotespace1 = new RemoteObjectSpace(("tcp://127.0.0.1:8989/sos?KEEP"));
 			IObjectSpaceSimple remotespace2 = new RemoteObjectSpace(("tcp://127.0.0.1:8988/sos?KEEP"));
 			IObjectSpaceSimple remotespace3 = new RemoteObjectSpace(("tcp://127.0.0.1:8987/sos?KEEP"));
