@@ -70,6 +70,19 @@
         },
 
         {
+            "name": "Example 7",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceRoot}/examples/distributed/Example7/bin/Debug/netcoreapp2.0/Example7.dll",
+            "args": [],
+            "cwd": "${workspaceRoot}",
+            "stopAtEntry": false,
+            "console": "internalConsole"
+        },
+
+
+        {
             "name": "Example 6 - Client",
             "type": "coreclr",
             "request": "launch",

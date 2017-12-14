@@ -8,7 +8,7 @@ namespace dotSpace.Objects.Network.Messages.Requests
     /// <summary>
     /// Entity representing a message of a Query request.
     /// </summary>
-    public sealed class ObjectQueryRequest<T> : RequestBase
+    public sealed class ObjectQueryRequest<T> : ObjectRequestBase<T>
     {
         /////////////////////////////////////////////////////////////////////////////////////////////
         #region // Constructors

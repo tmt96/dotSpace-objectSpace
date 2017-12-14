@@ -8,7 +8,7 @@ namespace dotSpace.Objects.Network.Messages.Requests
     /// <summary>
     /// Entity representing a message of a GetP request.
     /// </summary>
-    public sealed class ObjectGetPRequest<T> : RequestBase
+    public sealed class ObjectGetPRequest<T> : ObjectRequestBase<T>
     {
         /////////////////////////////////////////////////////////////////////////////////////////////
         #region // Constructorss

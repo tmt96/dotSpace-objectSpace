@@ -8,7 +8,7 @@ namespace dotSpace.Objects.Network.Messages.Requests
     /// <summary>
     /// Entity representing a message of a GetAll request.
     /// </summary>
-    public sealed class ObjectGetAllRequest<T> : RequestBase
+    public sealed class ObjectGetAllRequest<T> : ObjectRequestBase<T>
     {
         /////////////////////////////////////////////////////////////////////////////////////////////
         #region // Constructors

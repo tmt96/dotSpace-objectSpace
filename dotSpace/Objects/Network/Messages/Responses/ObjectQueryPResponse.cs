@@ -7,7 +7,7 @@ namespace dotSpace.Objects.Network.Messages.Responses
     /// <summary>
     /// Entity representing a message of a QueryP response.
     /// </summary>
-    public sealed class ObjectQueryPResponse<T> : ResponseBase
+    public sealed class ObjectQueryPResponse<T> : ObjectResponseBase<T>
     {
         /////////////////////////////////////////////////////////////////////////////////////////////
         #region // Constructors

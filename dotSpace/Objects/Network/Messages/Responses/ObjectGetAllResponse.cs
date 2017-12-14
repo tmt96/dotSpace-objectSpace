@@ -10,7 +10,7 @@ namespace dotSpace.Objects.Network.Messages.Responses
     /// <summary>
     /// Entity representing a message of a GetAll response.
     /// </summary>
-    public sealed class ObjectGetAllResponse<T> : ResponseBase
+    public sealed class ObjectGetAllResponse<T> : ObjectResponseBase<T>
     {
         /////////////////////////////////////////////////////////////////////////////////////////////
         #region // Constructors

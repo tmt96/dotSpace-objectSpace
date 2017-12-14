@@ -6,7 +6,7 @@ namespace dotSpace.Objects.Network.Messages.Responses
     /// <summary>
     /// Entity representing a message of a Put response.
     /// </summary>
-    public sealed class ObjectPutResponse<T> : ResponseBase
+    public sealed class ObjectPutResponse<T> : ObjectResponseBase<T>
     {
         /////////////////////////////////////////////////////////////////////////////////////////////
         #region // Constructors

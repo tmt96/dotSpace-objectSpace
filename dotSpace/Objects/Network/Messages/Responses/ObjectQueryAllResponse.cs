@@ -8,7 +8,7 @@ namespace dotSpace.Objects.Network.Messages.Responses
     /// <summary>
     /// Entity representing a message of a QueryAll response.
     /// </summary>
-    public sealed class ObjectQueryAllResponse<T> : ResponseBase
+    public sealed class ObjectQueryAllResponse<T> : ObjectResponseBase<T>
     {
         /////////////////////////////////////////////////////////////////////////////////////////////
         #region // Constructors

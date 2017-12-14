@@ -47,12 +47,11 @@ namespace dotSpace.Objects.Network.ConnectionModes
         {
             while (true) // FIX THIS
             {
-                RequestBase request = (RequestBase)this.protocol.Receive(this.encoder);
+                var request = this.protocol.Receive(this.encoder);
                 var t = Task.Factory.StartNew(() =>
                 {
-                    RequestBase req = request;
-                    req = (RequestBase)this.ValidateRequest(req);
-                    ResponseBase response = (ResponseBase)operationMap.Execute(req);
+                    var req = this.ValidateRequest(request);
+                    var response = operationMap.Execute(req);
                     lock (this.protocol)
                     {
                         this.protocol.Send(response, this.encoder);

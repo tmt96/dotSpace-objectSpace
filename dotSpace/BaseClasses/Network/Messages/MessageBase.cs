@@ -2,7 +2,6 @@
 using dotSpace.Interfaces;
 using dotSpace.Interfaces.Network;
 using System;
-using static Newtonsoft.Json.JsonConvert;
 using Newtonsoft.Json;
 
 namespace dotSpace.BaseClasses.Network.Messages

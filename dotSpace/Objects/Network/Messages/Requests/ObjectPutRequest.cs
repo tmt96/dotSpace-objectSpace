@@ -8,7 +8,7 @@ namespace dotSpace.Objects.Network.Messages.Requests
     /// <summary>
     /// Entity representing a message of a Put request.
     /// </summary>
-    public sealed class ObjectPutRequest<T> : RequestBase
+    public sealed class ObjectPutRequest<T> : ObjectRequestBase<T>
     {
         /////////////////////////////////////////////////////////////////////////////////////////////
         #region // Constructors
