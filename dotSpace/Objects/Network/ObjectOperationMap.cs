@@ -20,7 +20,7 @@ namespace dotSpace.Objects.Network
         /////////////////////////////////////////////////////////////////////////////////////////////
         #region // Fields
 
-        private IObjectRepositorySimple repository;
+        public IObjectRepositorySimple repository;
 
         #endregion
 
@@ -45,15 +45,22 @@ namespace dotSpace.Objects.Network
         /// </summary>
         public IMessage Execute(IMessage request)
         {
-            return new BasicResponse(request.Actiontype, request.Source, request.Session, request.Target, StatusCode.METHOD_NOT_ALLOWED, StatusMessage.METHOD_NOT_ALLOWED);
+                try
+                {
+                    return ExecuteHelper((dynamic) request);
+                }
+                catch (Exception ex)
+                {
+                    return new BasicResponse(request.Actiontype, request.Source, request.Session, request.Target, StatusCode.METHOD_NOT_ALLOWED, StatusMessage.METHOD_NOT_ALLOWED);
+                }
         }
 
         #endregion
 
         /////////////////////////////////////////////////////////////////////////////////////////////
-        #region // Private Methods
+        #region // public Methods
 
-        private IMessage Execute<T>(ObjectGetRequest<T> request)
+        private IMessage ExecuteHelper<T>(ObjectGetRequest<T> request)
         {
             IObjectSpaceSimple ts = this.repository.GetSpace(request.Target);
             if (ts != null)
@@ -63,7 +70,7 @@ namespace dotSpace.Objects.Network
             }
             return new ObjectGetResponse<T>(request.Source, request.Session, request.Target, default(T), StatusCode.NOT_FOUND, StatusMessage.NOT_FOUND);
         }
-        private IMessage Execute<T>(ObjectGetPRequest<T> request)
+        private IMessage ExecuteHelper<T>(ObjectGetPRequest<T> request)
         {
             IObjectSpaceSimple ts = this.repository.GetSpace(request.Target);
             if (ts != null)
@@ -73,7 +80,7 @@ namespace dotSpace.Objects.Network
             }
             return new ObjectGetPResponse<T>(request.Source, request.Session, request.Target, default(T), StatusCode.NOT_FOUND, StatusMessage.NOT_FOUND);
         }
-        private IMessage Execute<T>(ObjectGetAllRequest<T> request)
+        private IMessage ExecuteHelper<T>(ObjectGetAllRequest<T> request)
         {
             IObjectSpaceSimple ts = this.repository.GetSpace(request.Target);
             if (ts != null)
@@ -83,7 +90,7 @@ namespace dotSpace.Objects.Network
             }
             return new ObjectGetAllResponse<T>(request.Source, request.Session, request.Target, new List<T>(), StatusCode.NOT_FOUND, StatusMessage.NOT_FOUND);
         }
-        private IMessage Execute<T>(ObjectQueryRequest<T> request)
+        private IMessage ExecuteHelper<T>(ObjectQueryRequest<T> request)
         {
             IObjectSpaceSimple ts = this.repository.GetSpace(request.Target);
             if (ts != null)
@@ -93,7 +100,7 @@ namespace dotSpace.Objects.Network
             }
             return new ObjectQueryResponse<T>(request.Source, request.Session, request.Target, default(T), StatusCode.NOT_FOUND, StatusMessage.NOT_FOUND);
         }
-        private IMessage Execute<T>(ObjectQueryPRequest<T> request)
+        private IMessage ExecuteHelper<T>(ObjectQueryPRequest<T> request)
         {
             IObjectSpaceSimple ts = this.repository.GetSpace(request.Target);
             if (ts != null)
@@ -103,7 +110,7 @@ namespace dotSpace.Objects.Network
             }
             return new ObjectQueryPResponse<T>(request.Source, request.Session, request.Target, default(T), StatusCode.NOT_FOUND, StatusMessage.NOT_FOUND);
         }
-        private IMessage Execute<T>(ObjectQueryAllRequest<T> request)
+        private IMessage ExecuteHelper<T>(ObjectQueryAllRequest<T> request)
         {
             IObjectSpaceSimple ts = this.repository.GetSpace(request.Target);
             if (ts != null)
@@ -113,7 +120,7 @@ namespace dotSpace.Objects.Network
             }
             return new ObjectQueryAllResponse<T>(request.Source, request.Session, request.Target, new List<T>(), StatusCode.NOT_FOUND, StatusMessage.NOT_FOUND);
         }
-        private IMessage Execute<T>(ObjectPutRequest<T> request)
+        private IMessage ExecuteHelper<T>(ObjectPutRequest<T> request)
         {
             IObjectSpaceSimple ts = this.repository.GetSpace(request.Target);
             if (ts != null)

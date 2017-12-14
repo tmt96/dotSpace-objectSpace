@@ -23,20 +23,9 @@ namespace dotSpace.Objects.Network.Messages.Requests
         /// <summary>
         /// Initializes a new instances of the GetPRequest class.
         /// </summary>
-        public ObjectGetPRequest( string source, string session, string target, Func<T, bool> condition) : base( ActionType.OBJECT_GETP_REQUEST, source, session, target)
+        public ObjectGetPRequest( string source, string session, string target) : base( ActionType.OBJECT_GETP_REQUEST, source, session, target)
         {
-            this.Condition = condition;
         }
-
-        #endregion
-
-        /////////////////////////////////////////////////////////////////////////////////////////////
-        #region // Public Properties
-
-        /// <summary>
-        /// Gets or sets the underlying array of values constituting the template pattern.
-        /// </summary>
-        public Func<T, bool> Condition { get; set; }
 
         #endregion
 

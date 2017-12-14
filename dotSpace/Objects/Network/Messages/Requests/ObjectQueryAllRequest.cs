@@ -23,20 +23,14 @@ namespace dotSpace.Objects.Network.Messages.Requests
         /// <summary>
         /// Initializes a new instances of the QueryAllRequest class.
         /// </summary>
-        public ObjectQueryAllRequest( string source, string session, string target, Func<T, bool> condition) : base( ActionType.OBJECT_QUERYALL_REQUEST, source, session, target)
+        public ObjectQueryAllRequest( string source, string session, string target) : base( ActionType.OBJECT_QUERYALL_REQUEST, source, session, target)
         {
-            this.Condition = condition;
         }
 
         #endregion
 
         /////////////////////////////////////////////////////////////////////////////////////////////
         #region // Public Properties
-
-        /// <summary>
-        /// Gets or sets the underlying array of values constituting the template pattern.
-        /// </summary>
-        public Func<T, bool> Condition { get; set; }
 
         #endregion
 

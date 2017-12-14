@@ -23,22 +23,12 @@ namespace dotSpace.Objects.Network.Messages.Requests
         /// <summary>
         /// Initializes a new instances of the QueryPRequest class.
         /// </summary>
-        public ObjectQueryPRequest(string source, string session, string target, Func<T, bool> condition) : base(ActionType.OBJECT_QUERYP_REQUEST, source, session, target)
+        public ObjectQueryPRequest(string source, string session, string target) : base(ActionType.OBJECT_QUERYP_REQUEST, source, session, target)
         {
-            this.Condition = condition;
         }
 
         #endregion
 
-        /////////////////////////////////////////////////////////////////////////////////////////////
-        #region // Public Properties
-
-        /// <summary>
-        /// Gets or sets the underlying array of values constituting the template pattern.
-        /// </summary>
-        public Func<T, bool> Condition { get; set; }
-
-        #endregion
 
         /////////////////////////////////////////////////////////////////////////////////////////////
         #region // Public Methods

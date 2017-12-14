@@ -35,7 +35,7 @@ namespace dotSpace.BaseClasses.Network
         {
             this.spaces = new Dictionary<string, IObjectSpaceSimple>();
             this.gates = new List<IGate>();
-            this.encoder = new ResponseEncoder();
+            this.encoder = new ObjectEncoderBase();
             this.gateFactory = new GateFactory();
         }
 
