@@ -77,11 +77,11 @@ namespace ClickRate
 				var impressionLogAgent = new ImpressionEntryParser("2", remoteSpace, Program.IMP_FILE);
 				impressionLogAgent.Start();
 			}
-			else if (args[0] == "imp")
+			else if (args[0] == "click")
 			{
 				ISpace remoteSpace = new RemoteSpace("tcp://" + address + ":" + CLICK_PORT + "/tSpace?KEEP");
 
-				var clickLogAgent = new ImpressionEntryParser("click", remoteSpace, Program.CLICK_FILE);
+				var clickLogAgent = new ClickEntryParser("click", remoteSpace, Program.CLICK_FILE);
 				clickLogAgent.Start();
 			}
 			else

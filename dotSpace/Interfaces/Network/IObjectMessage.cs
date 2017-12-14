@@ -5,6 +5,5 @@ namespace dotSpace.Interfaces.Network
 {
     public interface IObjectMessage<T> : IMessage
     {
-        
     }
 }
