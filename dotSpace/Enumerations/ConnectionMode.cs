@@ -5,7 +5,6 @@
     /// </summary>
     public enum ConnectionMode
     {
-        NONE,
         /// <summary>
         /// CONN is a simple request/response pattern where the underlying connection is terminated after each operation.
         /// </summary>

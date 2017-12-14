@@ -30,9 +30,9 @@ namespace dotSpace.Objects.Network.ConnectionModes
         /// </summary>
         public override void ProcessRequest(IOperationMap operationMap)
         {
-            RequestBase request = (RequestBase)this.protocol.Receive(this.encoder);
-            request = (RequestBase)this.ValidateRequest(request);
-            ResponseBase response = (ResponseBase)operationMap.Execute(request);
+            var request = this.protocol.Receive(this.encoder);
+            request = this.ValidateRequest(request);
+            var response = operationMap.Execute(request);
             this.protocol.Send(response, this.encoder);
         }
         /// <summary>

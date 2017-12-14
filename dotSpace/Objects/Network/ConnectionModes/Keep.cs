@@ -5,6 +5,7 @@ using dotSpace.Interfaces.Network;
 using dotSpace.Objects.Utility;
 using System.Threading;
 using System.Threading.Tasks;
+using System;
 
 namespace dotSpace.Objects.Network.ConnectionModes
 {
@@ -46,12 +47,11 @@ namespace dotSpace.Objects.Network.ConnectionModes
         {
             while (true) // FIX THIS
             {
-                RequestBase request = (RequestBase)this.protocol.Receive(this.encoder);
+                var request = this.protocol.Receive(this.encoder);
                 var t = Task.Factory.StartNew(() =>
                 {
-                    RequestBase req = request;
-                    req = (RequestBase)this.ValidateRequest(req);
-                    ResponseBase response = (ResponseBase)operationMap.Execute(req);
+                    var req = this.ValidateRequest(request);
+                    var response = operationMap.Execute(req);
                     lock (this.protocol)
                     {
                         this.protocol.Send(response, this.encoder);
@@ -83,7 +83,7 @@ namespace dotSpace.Objects.Network.ConnectionModes
         {
             while (true) // FIX THIS
             {
-                MessageBase message = (MessageBase)this.protocol.Receive(this.encoder);
+                MessageBase message = (MessageBase)this.protocol.Receive(this.encoder);				
                 message = (MessageBase)this.ValidateResponse(message);
                 this.messageQueue.Put(message);
             }

@@ -3,6 +3,7 @@ using dotSpace.BaseClasses.Network.Messages;
 using dotSpace.Enumerations;
 using dotSpace.Interfaces.Network;
 using dotSpace.Objects.Network.Messages.Responses;
+using System;
 
 namespace dotSpace.Objects.Network
 {
