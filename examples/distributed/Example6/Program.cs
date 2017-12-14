@@ -13,7 +13,7 @@ namespace Example6
     {
         static void Main(string[] args)
         {
-            if (args.Length == 1)
+            if (args.Length >= 1)
             {
                 if (args[0] == "table")
                 {
@@ -35,7 +35,7 @@ namespace Example6
                 else if (args[0] == "philosopher")
                 {
                     // Instantiate a new remote space, thereby allowing a persistant networked connection to the repository.
-                    ISpace remotespace = new RemoteSpace("tcp://127.0.0.1:31415/DiningTable?KEEP");
+                    ISpace remotespace = new RemoteSpace("tcp://" + args[1]+ ":31415/DiningTable?KEEP");
 
                     // Instantiate the philosopher agents and let them use the same connection to access the repository. 
                     List<AgentBase> agents = new List<AgentBase>();

@@ -12,12 +12,12 @@ namespace ClickRate
         {
 			if (args.Length < 1)
             {
-                Console.WriteLine("Must specify TCP gate");
+                Console.WriteLine("Must specify TCP address");
                 return;
             }
-			string gate = args[0];
+			string address = args[0];
 			
-            ISpace remoteSpace = new RemoteSpace("tcp://127.0.0.1:" + gate + "/tSpace?KEEP");
+            ISpace remoteSpace = new RemoteSpace("tcp://" + address + "/tSpace?KEEP");
 
 			var impressionLogAgent = new ImpressionEntryParser("imp", remoteSpace, Program.IMP_FILE);
             impressionLogAgent.Start();
