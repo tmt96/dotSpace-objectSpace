@@ -21,16 +21,13 @@ namespace Example6
 
         protected override void DoWork()
         {
-	    Console.WriteLine("Start Working!");
 	    ITuple lf, rf;
             try
             {
                 while (true)
                 {
-		    Console.WriteLine("Take left fork");
                     // Take the left fork.
                     lf = this.Get("FORK", this.leftId);
-		    Console.WriteLine("Take right fork");
                     // Try to take the right fork.
                     rf = this.GetP("FORK", this.rightId);
                     
