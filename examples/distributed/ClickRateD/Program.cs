@@ -15,41 +15,79 @@ namespace ClickRate
         internal const string JOBS_FINISHED = "Jobs Finished!";
         internal const string JOBS_START = "Jobs Start";
 		
-		internal const string IMP_GATE1 = "9986";
-		internal const string IMP_GATE2 = "9987";
-		internal const string CLICK_GATE = "9988";
-		internal const string CALC_GATE = "9985";
+		internal const string IMP_PORT1 = "9986";
+		internal const string IMP_PORT2 = "9987";
+		internal const string CLICK_PORT = "9988";
+		internal const string CALC_PORT = "9985";
 
         static void Main(string[] args)
         {
-            if (args.Length < 3)
-            {
-                Console.WriteLine("Error: Wrong number of parameters");
-                Console.WriteLine(args[0]);
-                Console.WriteLine("Expected: [impressions] [clicked] [out]");
-                return;
-            }
-            var impressionFileName = args[0];
-            var clickFileName = args[1];
-            var outFileName = args[2];
+			if (args.Length < 2)
+			{
+				Console.WriteLine("Error: Wrong number of parameters");
+				Console.WriteLine("Expected: [calc|imp1|imp2|click] [IP address] ([impressions] [clicked] [out])");
+			}
+			
+			var address = args[1];
 
-			// Instantiate a new Space repository.
-            SpaceRepository repository = new SpaceRepository();
+			if (args[0] == "calc")
+			{
+
+				if (args.Length < 5)
+				{
+					Console.WriteLine("Error: Wrong number of parameters");
+					Console.WriteLine(args[0]);
+					Console.WriteLine("Expected for calculator: [calc] [IP address] [impressions] [clicked] [out]");
+					return;
+				}
+				
+				var impressionFileName = args[2];
+				var clickFileName = args[3];
+				var outFileName = args[4];
+
+				// Instantiate a new Space repository.
+				SpaceRepository repository = new SpaceRepository();
             
-            // Add a gate, such that we can connect to it.
-            repository.AddGate("tcp://127.0.0.1:" + IMP_GATE1 + "?KEEP");
-			repository.AddGate("tcp://127.0.0.1:" + IMP_GATE2 + "?KEEP");
-			repository.AddGate("tcp://127.0.0.1:" + CLICK_GATE + "?KEEP");
-			repository.AddGate("tcp://127.0.0.1:" + CALC_GATE + "?KEEP");
+				// Add a gate, such that we can connect to it.
+				repository.AddGate("tcp://" + address + ":" + IMP_PORT1 + "?KEEP");
+				repository.AddGate("tcp://" + address + ":" + IMP_PORT2 + "?KEEP");
+				repository.AddGate("tcp://" + address + ":" + CLICK_PORT + "?KEEP");
+				repository.AddGate("tcp://" + address + ":" + CALC_PORT + "?KEEP");
 
-            // Add a new tree space.
-            repository.AddSpace("tSpace", new TreeSpace());
+				// Add a new tree space.
+				repository.AddSpace("tSpace", new TreeSpace());
+				
+				// Instantiate a remotespace (a networked space) thereby connecting to the spacerepository.
+				ISpace remoteSpace = new RemoteSpace("tcp://" + address + ":" + CALC_PORT + "/tSpace?KEEP");
+				
+				var clickRateCalculator = new ClickRateCalculator(remoteSpace, clickFileName, impressionFileName, outFileName);
+				clickRateCalculator.Start();
+			}
+			else if (args[0] == "imp1")
+			{
+				ISpace remoteSpace = new RemoteSpace("tcp://" + address + ":" + IMP_PORT1 +  "/tSpace?KEEP");
 
-			// Instantiate a remotespace (a networked space) thereby connecting to the spacerepository.
-			ISpace remoteSpace = new RemoteSpace("tcp://127.0.0.1:" + CALC_GATE + "/tSpace?KEEP");
+				var impressionLogAgent = new ImpressionEntryParser("1", remoteSpace, Program.IMP_FILE);
+				impressionLogAgent.Start();
+			}
+			else if (args[0] == "imp2")
+			{
+				ISpace remoteSpace = new RemoteSpace("tcp://" + address + ":" + IMP_PORT2 +  "/tSpace?KEEP");
 
-            var clickRateCalculator = new ClickRateCalculator(remoteSpace, clickFileName, impressionFileName, outFileName);
-            clickRateCalculator.Start();
+				var impressionLogAgent = new ImpressionEntryParser("2", remoteSpace, Program.IMP_FILE);
+				impressionLogAgent.Start();
+			}
+			else if (args[0] == "imp")
+			{
+				ISpace remoteSpace = new RemoteSpace("tcp://" + address + ":" + CLICK_PORT + "/tSpace?KEEP");
+
+				var clickLogAgent = new ImpressionEntryParser("click", remoteSpace, Program.CLICK_FILE);
+				clickLogAgent.Start();
+			}
+			else
+			{
+				Console.WriteLine("Please specify [calc|imp1|imp2|click]");
+			}
         }
     }
 }
