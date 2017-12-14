@@ -21,14 +21,16 @@ namespace Example6
 
         protected override void DoWork()
         {
-            ITuple lf, rf;
+	    Console.WriteLine("Start Working!");
+	    ITuple lf, rf;
             try
             {
                 while (true)
                 {
+		    Console.WriteLine("Take left fork");
                     // Take the left fork.
                     lf = this.Get("FORK", this.leftId);
-
+		    Console.WriteLine("Take right fork");
                     // Try to take the right fork.
                     rf = this.GetP("FORK", this.rightId);
                     
@@ -43,6 +45,7 @@ namespace Example6
                     // Otherwise put back the left.
                     else
                     {
+			Console.WriteLine("No right fork");
                         this.Put(lf);
                     }
                 }
