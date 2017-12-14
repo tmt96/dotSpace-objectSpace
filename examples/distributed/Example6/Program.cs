@@ -19,7 +19,7 @@ namespace Example6
                 {
                     // Instantiate a new space repository and add a gate to it.
                     SpaceRepository repository = new SpaceRepository();
-                    repository.AddGate("tcp://127.0.0.1:31415?KEEP");
+                    repository.AddGate("tcp://" + args[1] + ":31415?KEEP");
 
                     // Add a new Fifo based space to the repository.
                     repository.AddSpace("DiningTable", new SequentialSpace());
