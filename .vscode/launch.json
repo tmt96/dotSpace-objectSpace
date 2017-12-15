@@ -109,11 +109,11 @@
         },
 
         {
-            "name": "Object Space Example 1",
+            "name": "Object Space Philosopher",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/examples/ObjectSpaceExamples/Example1/bin/Debug/netcoreapp2.0/Example1.dll",
+            "program": "${workspaceFolder}/examples/ObjectSpaceExamples/Fork/bin/Debug/netcoreapp2.0/Fork.dll",
             "args": [],
             "cwd": "${workspaceFolder}",
             "console": "internalConsole",
@@ -122,11 +122,11 @@
         },
 
         {
-            "name": "Object Space Example 2",
+            "name": "Object Space Produce-Consumer",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/examples/ObjectSpaceExamples/Example2/bin/Debug/netcoreapp2.0/Example2.dll",
+            "program": "${workspaceFolder}/examples/ObjectSpaceExamples/ProducerCOnsumer/bin/Debug/netcoreapp2.0/ProducerCOnsumer.dll",
             "args": [],
             "cwd": "${workspaceFolder}",
             "console": "internalConsole",
@@ -135,24 +135,11 @@
         },
 
         {
-            "name": "Object Space Example 3",
+            "name": "Object Space Distributed PC",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/examples/ObjectSpaceExamples/Example3/bin/Debug/netcoreapp2.0/Example3.dll",
-            "args": [],
-            "cwd": "${workspaceFolder}",
-            "console": "internalConsole",
-            "stopAtEntry": false,
-            "internalConsoleOptions": "openOnSessionStart"
-        },
-
-        {
-            "name": "Object Space Example 4",
-            "type": "coreclr",
-            "request": "launch",
-            "preLaunchTask": "build",
-            "program": "${workspaceFolder}/examples/ObjectSpaceExamples/Example4/bin/Debug/netcoreapp2.0/Example4.dll",
+            "program": "${workspaceFolder}/examples/ObjectSpaceExamples/ProducerConsumerD/bin/Debug/netcoreapp2.0/ProducerConsumerD.dll",
             "args": [],
             "cwd": "${workspaceFolder}",
             "console": "internalConsole",
