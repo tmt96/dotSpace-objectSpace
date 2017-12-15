@@ -74,13 +74,13 @@ Please go to dotSpace's [wiki page](https://github.com/pSpaces/dotSpace/wiki) fo
 
 ## Main Extensions
 
-# TreeSpace
+### TreeSpace
 
 * TreeSpace (dotSpace/Objects/Space/TreeSpace.cs): Implementation of a tuple space optimized for lookups. Uses the TupleTree data structure.
 
 * TupleTree (dotSpace/Utility/TupleTree.cs): A data structure which stores tuples in a tree.
 
-# ObjectSpace
+### ObjectSpace
 
 * ObjectSpaceBase (dotSpace/BaseClasses/Space/): An abstract class which supports the main operations for an ObjectSpace. Stores an OSBEntry for each type, which takes care of storing objects of the type and keeping track of all subclasses and superclasses.
 
@@ -96,7 +96,7 @@ Please go to dotSpace's [wiki page](https://github.com/pSpaces/dotSpace/wiki) fo
 
 Other additions include classes and interfaces that mimic existing ones but are adapted for the implementation of an ObjectSpace.
 
-# Main Examples
+### Main Examples
 
 * ClickRate (examples/ClickRate/): A program which reads in impressions and clicks for advertisements, and computes the click-through rate for each ad.
 
