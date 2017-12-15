@@ -2,9 +2,9 @@
 
 ## Introduction
 
-This framework provides support to concurrent and distributed programming with (tuple) spaces in .NET.
+This framework provides support to concurrent and distributed programming with (tuple) spaces in .NET. The framework could be found on [GitHub](https://github.com/tmt96/dotSpace-objectSpace/)
 
-The framework was originally designed and developed by [Shane D. McLean](https://github.com/sequenze) in collaboration with [Alberto Lluch Lafuente](https://github.com/albertolluch).
+The framework was originally designed and developed by [Shane D. McLean](https://github.com/sequenze) in collaboration with [Alberto Lluch Lafuente](https://github.com/albertolluch). The original framework could be found [here](https://github.com/pSpaces/dotSpace/)
 
 This fork is a port of the application to support .NET Standard 2.0. With this port, the library could be used from all three popular .NET runtime: .NET Framework on Windows, and .NET Core and Mono on both Windows and *nix. Ultimately the goal is to have the library support an object space - an extension of the original tuple space idea.
 
@@ -76,34 +76,45 @@ Please go to dotSpace's [wiki page](https://github.com/pSpaces/dotSpace/wiki) fo
 
 ### TreeSpace
 
-* TreeSpace (dotSpace/Objects/Space/TreeSpace.cs): Implementation of a tuple space optimized for lookups. Uses the TupleTree data structure.
+* [TreeSpace](dotSpace/Objects/Space/TreeSpace.cs): Implementation of a tuple space optimized for lookups. Uses the TupleTree data structure.
 
-* TupleTree (dotSpace/Utility/TupleTree.cs): A data structure which stores tuples in a tree.
+* [TupleTree](dotSpace/Objects/Utility/TupleTree.cs): A data structure which stores tuples in a tree.
 
 ### ObjectSpace
 
-* ObjectSpaceBase (dotSpace/BaseClasses/Space/): An abstract class which supports the main operations for an ObjectSpace. Stores an OSBEntry for each type, which takes care of storing objects of the type and keeping track of all subclasses and superclasses.
+#### Interface
 
-* ObjectSpaceBaseSimple (dotSpace/BaseClasses/Space/): An abstract class which is a simplified version of ObjectSpaceBase, used for RemoteObjectSpace. Does not handle filtered gets and queries.
+* [IObjectSpaceSimple](dotSpace/Interfaces/ObjectSpace/IObjectSpaceSimple.cs) and [IObjectSpace](dotSpace/Interfaces/ObjectSpace/IObjectSpace.cs): Specify the interface for an ObjectSpace
 
-* SequentialObjectSpace (dotSpace/Objects/Space/): Actual implementation of an ObjectSpaceBase.
+* [IObjectMessage](dotSpace/Interfaces/ObjectNetwork/IObjectMessage.cs): Base interface for all network message
 
-* RemoteObjectSpace (dotSpace/Objects/Network/): Allows a user to access an ObjectSpaceSimple remotely.
+* [IObjectRepository](dotSpace/Interfaces/ObjectNetwork/IObjectRepository.cs) and [IObjectRepositorySimple](dotSpace/Interfaces/ObjectNetwork/IObjectRepositorySimple.cs): Specify the interface for a remote ObjectSpace Space repository
 
-* ObjectOperationMap (dotSpace/Objects/Network): Reads in a request message (a wrapper for a remote function call) and executes it.
+#### Classes
 
-* OSBEntry, OSBObjectCollection, OSBSubtypeCollection (dotSpace/BaseClasses/Utility/): Data structures which takes care of objects of a certain type and keeps track of all subclasses and superclasses.
+The classes we added to the project can be found in these folders:
+
+* [ObjectSpaceBase](dotSpace/BaseClasses/ObjectSpace/): An abstract class which supports the main operations for an ObjectSpace. We also provide base implementation of ObjectSpace agents for ease of use
+
+* [ObjectSpace Utilities](dotSpace/BaseClasses/ObjectUtility/): Includes classes that make up an entry in the base ObjectSpace
+
+* [Base remote Object Message Classes](dotSpace/BaseClasses/ObjectNetwork): Base classes for distributed ObjectSpace, including base classes for network messages, a base Json encoder for network messages, and a base remote space repository.
+
+* [SequentialObjectSpace](dotSpace/Objects/ObjectSpace/): A sample FIFO implementation of ObjectSpace
+
+
+* [Remote ObjectSpace & Object Repository](dotSpace/Objects/ObjectNetwork/): Allows a user to access an ObjectSpaceSimple remotely, including implementations of a remote Object Space, remote Space Repository, a custom Json writer, an OperationMap to handle different types of message, and all network messages in ObjectSpace
 
 Other additions include classes and interfaces that mimic existing ones but are adapted for the implementation of an ObjectSpace.
 
 ### Main Examples
 
-* ClickRate (examples/ClickRate/): A program which reads in impressions and clicks for advertisements, and computes the click-through rate for each ad.
+* [ClickRate](examples/ClickRate/): A program which reads in impressions and clicks for advertisements, and computes the click-through rate for each ad.
 
-* ClickRateD (examples/distributed/ClickRateD/): A distributed version of the ClickRate program.
+* [ClickRateD](examples/distributed/ClickRateD/): A distributed version of the ClickRate program.
 
-* Fork (examples/ObjectSpaceExamples/Fork/): A version of Example2 (dining philosophers problem) which uses ObjectSpace.
+* [Fork](examples/ObjectSpaceExamples/Fork/): A version of Example2 (dining philosophers problem) which uses ObjectSpace.
 
-* ProducerConsumer (examples/ObjectSpaceExamples/ProducerConsumer/): An example of how subtyping and filtering may be used with ObjectSpace.
+* [ProducerConsumer](examples/ObjectSpaceExamples/ProducerConsumer/): An example of how subtyping and filtering may be used with ObjectSpace.
 
-* ProducerConsumerD (examples/ObjectSpaceExamples/ProducerConsumerD/): A distributed version of the ProducerConsumer program.
+* [ProducerConsumerD](examples/ObjectSpaceExamples/ProducerConsumerD/): A distributed version of the ProducerConsumer program.
