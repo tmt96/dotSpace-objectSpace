@@ -9,14 +9,14 @@ namespace dotSpace.BaseClasses.Network.Messages
         #region // Constructors
 
         /// <summary>
-        /// Initializes a new instances of the BasicRequest class.
+        /// Initializes a new instances of the ObjectBasicRequest class.
         /// </summary>
         public ObjectRequestBase()
         {
         }
 
         /// <summary>
-        /// Initializes a new instances of the BasicRequest class.
+        /// Initializes a new instances of the ObjectBasicRequest class.
         /// </summary>
         public ObjectRequestBase(ActionType action, string source, string session, string target) : base(action, source, session, target)
         {

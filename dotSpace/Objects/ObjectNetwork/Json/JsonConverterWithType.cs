@@ -5,6 +5,9 @@ using Newtonsoft.Json.Linq;
 
 namespace dotSpace.Objects.Network.Json
 {
+    /// <summary>
+    /// Custom Json writer that add type info to the Json message
+    /// </summary>
     internal class JsonConverterWithType : JsonConverter
     {
         internal static string TypeEntry = "$MessageType";
@@ -48,6 +51,11 @@ namespace dotSpace.Objects.Network.Json
     }
 }
 
+/// <summary>
+/// custom structure to make sure the converter is thread-safe
+/// Since JsonConverter is non thread-safe by default, the struct
+/// acts as a lock.
+/// </summary>
 internal struct PushValue<T> : IDisposable
 {
     Func<T> getValue;

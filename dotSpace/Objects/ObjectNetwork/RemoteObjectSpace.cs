@@ -16,14 +16,17 @@ using dotSpace.BaseClasses.Network;
 namespace dotSpace.Objects.Network
 {
 
-	public sealed class RemoteObjectSpace : IObjectSpaceSimple
-	{
+    /// <summary>
+    /// Provides networked access to a remote space, using any supported protocol and mode.
+    /// </summary>
+    public sealed class RemoteObjectSpace : IObjectSpaceSimple
+    {
 
-		private IConnectionMode mode;
+        private IConnectionMode mode;
         private IEncoder encoder;
         private ConnectionString connectionString;
 
-		public RemoteObjectSpace(string uri)
+        public RemoteObjectSpace(string uri)
         {
             this.connectionString = new ConnectionString(uri);
             this.encoder = new ObjectEncoderBase();
@@ -33,55 +36,55 @@ namespace dotSpace.Objects.Network
             }
         }
 
-		public T Get<T>()
-		{
-			var request = new ObjectGetRequest<T>(this.GetSource(), this.GetSessionId(), this.connectionString.Target);
+        public T Get<T>()
+        {
+            var request = new ObjectGetRequest<T>(this.GetSource(), this.GetSessionId(), this.connectionString.Target);
             var mode = this.GetMode();
-			return mode.PerformRequest<ObjectGetResponse<T>>(request).Result;
-		}
+            return mode.PerformRequest<ObjectGetResponse<T>>(request).Result;
+        }
 
         public T GetP<T>()
-		{
-			var request = new ObjectGetPRequest<T>(this.GetSource(), this.GetSessionId(), this.connectionString.Target);
+        {
+            var request = new ObjectGetPRequest<T>(this.GetSource(), this.GetSessionId(), this.connectionString.Target);
             var mode = this.GetMode();
             return mode.PerformRequest<ObjectGetPResponse<T>>(request).Result;
         }			
 
         public IEnumerable<T> GetAll<T>()
-		{
-			var request = new ObjectGetAllRequest<T>(this.GetSource(), this.GetSessionId(), this.connectionString.Target);
+        {
+            var request = new ObjectGetAllRequest<T>(this.GetSource(), this.GetSessionId(), this.connectionString.Target);
             var mode = this.GetMode();
             return mode.PerformRequest<ObjectGetAllResponse<T>>(request).Result;
         }
 
-		public T Query<T>()
-		{
-			var request = new ObjectQueryRequest<T>(this.GetSource(), this.GetSessionId(), this.connectionString.Target);
+        public T Query<T>()
+        {
+            var request = new ObjectQueryRequest<T>(this.GetSource(), this.GetSessionId(), this.connectionString.Target);
             var mode = this.GetMode();
             return mode.PerformRequest<ObjectQueryResponse<T>>(request).Result;
         }
 
-		public T QueryP<T>()
-		{
+        public T QueryP<T>()
+        {
             var request = new ObjectQueryPRequest<T>(this.GetSource(), this.GetSessionId(), this.connectionString.Target);
             var mode = this.GetMode();
             return mode.PerformRequest<ObjectQueryPResponse<T>>(request).Result;
         }
 
         public IEnumerable<T> QueryAll<T>()
-		{
+        {
             var request = new ObjectQueryAllRequest<T>(this.GetSource(), this.GetSessionId(), this.connectionString.Target);
             var mode = this.GetMode();
             return mode.PerformRequest<ObjectQueryAllResponse<T>>(request).Result;
         }
 
         public void Put<T>(T element)
-		{
-			var request = new ObjectPutRequest<T>(this.GetSource(), this.GetSessionId(), this.connectionString.Target, element);
+        {
+            var request = new ObjectPutRequest<T>(this.GetSource(), this.GetSessionId(), this.connectionString.Target, element);
             this.GetMode()?.PerformRequest<ObjectPutResponse<T>>(request);
-		}
+        }
 
-		private string GetSessionId()
+        private string GetSessionId()
         {
             return Guid.NewGuid().ToString();
         }
@@ -110,7 +113,7 @@ namespace dotSpace.Objects.Network
                 default: return null;
             }
         }
-		
-	}
-	
+        
+    }
+    
 }

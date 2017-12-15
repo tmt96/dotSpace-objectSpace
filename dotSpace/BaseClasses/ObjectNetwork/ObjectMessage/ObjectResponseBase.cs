@@ -9,14 +9,14 @@ namespace dotSpace.BaseClasses.Network.Messages
         #region // Constructors
 
         /// <summary>
-        /// Initializes a new instances of the BasicResponse class.
+        /// Initializes a new instances of the ObjectBasicResponse class.
         /// </summary>
         public ObjectResponseBase()
         {
         }
 
         /// <summary>
-        /// Initializes a new instances of the BasicResponse class.
+        /// Initializes a new instances of the ObjectBasicResponse class.
         /// </summary>
         public ObjectResponseBase(ActionType action, string source, string session, string target, StatusCode code, string message) : base(action, source, session, target, code, message)
         {

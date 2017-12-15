@@ -5,6 +5,9 @@ using dotSpace.Objects.Utility;
 
 namespace dotSpace.Objects.Space
 {
+    /// <summary>
+    /// A tuplespace implementation based on a hierarchy structure
+    /// </summary>
     public class TreeSpace : ISpace
     {
         private TupleTree spaceTree;
@@ -16,11 +19,17 @@ namespace dotSpace.Objects.Space
             spaceTree = new TupleTree();
             tLock = new object();
         }
+        /// <summary>
+        /// Retrieves and removes the first tuple from the space, matching the specified pattern. The operation will block if no elements match.
+        /// </summary>
         public ITuple Get(IPattern pattern)
         {
             return Get(pattern.Fields);
         }
 
+        /// <summary>
+        /// Retrieves and removes the first tuple from the space, matching the specified pattern. The operation will block if no elements match.
+        /// </summary>
         public ITuple Get(params object[] pattern)
         {
             Monitor.Enter(tLock);
@@ -34,11 +43,17 @@ namespace dotSpace.Objects.Space
             return tuple;
         }
 
+        /// <summary>
+        /// Retrieves and removes all tuples from the space matching the specified pattern. The operation is non-blocking. The operation will return an empty set if no elements match.
+        /// </summary>
         public IEnumerable<ITuple> GetAll(IPattern pattern)
         {
             return GetAll(pattern.Fields);
         }
 
+        /// <summary>
+        /// Retrieves and removes all tuples from the space matching the specified pattern. The operation is non-blocking. The operation will return an empty set if no elements match.
+        /// </summary>
         public IEnumerable<ITuple> GetAll(params object[] pattern)
         {
             readerWriterLock.EnterWriteLock();
@@ -47,11 +62,16 @@ namespace dotSpace.Objects.Space
             return resList;
         }
 
+        /// <summary>
+        /// Retrieves and removes the first tuple from the space, matching the specified pattern. The operation is non-blocking. The operation will return null if no elements match.
+        /// </summary>
         public ITuple GetP(IPattern pattern)
         {
             return GetP(pattern.Fields);
         }
 
+        /// <summary>
+        /// Retrieves and removes the first tuple from the space, matching the specified pattern. The operation is non-blocking. The operation will return null if no elements match.
         public ITuple GetP(params object[] pattern)
         {
             readerWriterLock.EnterWriteLock();
@@ -60,11 +80,17 @@ namespace dotSpace.Objects.Space
             return tuple;
         }
 
+        /// <summary>
+        /// Inserts the tuple passed as argument into the space.
+        /// </summary>
         public void Put(ITuple tuple)
         {
             Put(tuple.Fields);
         }
 
+        /// <summary>
+        /// Inserts the tuple passed as argument into the space.
+        /// </summary>
         public void Put(params object[] tuple)
         {
             Monitor.Enter(tLock);
@@ -75,11 +101,17 @@ namespace dotSpace.Objects.Space
             Monitor.Exit(tLock);
         }
 
+        /// <summary>
+        /// Retrieves a clone of the first tuple from the space matching the specified pattern. The operation will block if no elements match.
+        /// </summary>
         public ITuple Query(IPattern pattern)
         {
             return Query(pattern.Fields);
         }
 
+        /// <summary>
+        /// Retrieves a clone of the first tuple from the space matching the specified pattern. The operation will block if no elements match.
+        /// </summary>
         public ITuple Query(params object[] pattern)
         {
             Monitor.Enter(tLock);
@@ -93,11 +125,17 @@ namespace dotSpace.Objects.Space
             return tuple;
         }
 
+        /// <summary>
+        /// Retrieves clones of all tuples from the space matching the specified pattern. The operation is non-blocking. The operation will return an empty set if no elements match.
+        /// </summary>
         public IEnumerable<ITuple> QueryAll(IPattern pattern)
         {
             return QueryAll(pattern.Fields);
         }
 
+        /// <summary>
+        /// Retrieves clones of all tuples from the space matching the specified pattern. The operation is non-blocking. The operation will return an empty set if no elements match.
+        /// </summary>
         public IEnumerable<ITuple> QueryAll(params object[] pattern)
         {
             readerWriterLock.EnterReadLock();
@@ -106,11 +144,17 @@ namespace dotSpace.Objects.Space
             return resList;
         }
 
+        /// <summary>
+        /// Retrieves a clone of the first tuple from the space matching the specified pattern. The operation is non-blocking. The operation will return null if no elements match.
+        /// </summary>
         public ITuple QueryP(IPattern pattern)
         {
             return QueryP(pattern.Fields);
         }
 
+        /// <summary>
+        /// Retrieves a clone of the first tuple from the space matching the specified pattern.The operation is non-blocking.The operation will return null if no elements match.
+        /// </summary>
         public ITuple QueryP(params object[] pattern)
         {
             readerWriterLock.EnterReadLock();

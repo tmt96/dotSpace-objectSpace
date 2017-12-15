@@ -6,6 +6,12 @@ using dotSpace.Objects.Space;
 
 namespace dotSpace.Objects.Utility
 {
+    /// <summary>
+    /// A hierarchy structure storing tuples
+    /// Each tuple is represented as a branch
+    /// the end of a tuple is denoted by a counter of
+    /// identical tuples in the space
+    /// </summary>
     public class TupleTree
     {
         private enum TupleHandleOption { KEEP, REMOVE };
@@ -18,6 +24,9 @@ namespace dotSpace.Objects.Utility
             this.lookupTable = new Dictionary<object, TupleTree>();
         }
 
+        /// <summary>
+        /// Add a tuple to the tree
+        /// </summary>
         public void Add(params object[] tuple)
         {
             var curTree = this;
@@ -34,33 +43,56 @@ namespace dotSpace.Objects.Utility
             curTree.Count++;
         }
 
+        /// <summary>
+        /// Get a tuple of the specify pattern from the tree
+        /// </summary>
         public ITuple Query(params object[] pattern)
         {
             var res = new List<object>(pattern.Length);
             return this.Query(TupleHandleOption.KEEP, 0, res, pattern);
         }
 
+        /// <summary>
+        /// Get all tuples of the specify pattern from the tree
+        /// </summary>
         public IEnumerable<ITuple> QueryAll(params object[] pattern)
         {
             var res = new List<object>(pattern.Length);
             return this.QueryAll(TupleHandleOption.KEEP, 0, res, pattern);
         }
 
+        /// <summary>
+        /// Remove a tuple of the specify pattern from the tree
+        /// </summary>
+        /// <returns>The tuple removed from the tree</returns>
         public ITuple Get(params object[] pattern)
         {
             var res = new List<object>(pattern.Length);
             return this.Query(TupleHandleOption.REMOVE, 0, res, pattern);
         }
 
+        /// <summary>
+        /// Remove all tuples of the specify pattern from the tree
+        /// </summary>
+        /// <returns>The collection of tuples removed from the tree</returns>
         public IEnumerable<ITuple> GetAll(params object[] pattern)
         {
             var res = new List<object>(pattern.Length);
             return this.QueryAll(TupleHandleOption.REMOVE, 0, res, pattern);
         }
 
+        /// <summary>
+        /// Recursively query for tuple of the specify pattern
+        /// </summary>
+        /// <param name="option">Whether to keep the tuple or not</param>
+        /// <param name="cur">current index in the pattern</param>
+        /// <param name="res">current result tuple</param>
+        /// <param name="pattern">the pattern we need to match</param>
+        /// <returns>The tuple matching the pattern</returns>
         private ITuple Query(TupleHandleOption option, int cur, List<object> res, object[] pattern)
         {
             #region LocalFunctions
+            // supports recursive querying
             ITuple RecursiveQuery(object element)
             {
                 res.Add(element);
@@ -70,6 +102,7 @@ namespace dotSpace.Objects.Utility
             }
             #endregion
 
+            // return result if done
             if (cur >= pattern.Length)
             {
                 if (Count <= 0)
@@ -87,6 +120,7 @@ namespace dotSpace.Objects.Utility
 
             if (pattern[cur] is Type)
             {
+                // recursively search all children matching the specified type
                 tuple = lookupTable.Select(item => item.Key)
                                    .Where(key => MatchedType((Type)pattern[cur], key))
                                    .Select(RecursiveQuery)
@@ -97,6 +131,7 @@ namespace dotSpace.Objects.Utility
             {
                 tuple = RecursiveQuery(pattern[cur]);
             }
+
             if (option == TupleHandleOption.REMOVE && tuple != null)
             {
                 RemoveEmptyChild(tuple[cur]);
@@ -107,6 +142,7 @@ namespace dotSpace.Objects.Utility
         private List<Space.Tuple> QueryAll(TupleHandleOption option, int cur, List<object> res, object[] pattern)
         {
             #region LocalFunctions
+            // supports recursive querying
             List<Space.Tuple> RecursiveQueryAll(object element)
             {
                 res.Add(element);
@@ -115,7 +151,8 @@ namespace dotSpace.Objects.Utility
                 return allTuples;
             }
             #endregion
-
+            
+            // return result if done
             if (cur >= pattern.Length)
             {
                 var result = Enumerable.Repeat(new dotSpace.Objects.Space.Tuple(res.ToArray()), Count).ToList();
@@ -130,6 +167,7 @@ namespace dotSpace.Objects.Utility
             var matchedKeysList = new List<object>();
             if (pattern[cur] is Type)
             {
+                // recursively search all children matching the specified type
                 foreach (var key in 
                             lookupTable.Select(item => item.Key)
                                        .Where(key => MatchedType((Type)pattern[cur], key)))
