@@ -1,5 +1,5 @@
 Copyright (c) 2017 Alberto Lluch Lafuente <albl@dtu.dk> and the dotSpace Developers
-Copyright (c) 2017 Tuan Tran <mt12@williams.edu>, Daishiro Nishida<dn6@williams.edu> and the dotSpace-ObjectSpace Developers
+Copyright (c) 2017 Tuan Tran <mt12@williams.edu>, Daishiro Nishida <dn6@williams.edu> and the dotSpace-ObjectSpace Developers
 
 (see and include the full [authors file](AUTHORS.md)).
 
