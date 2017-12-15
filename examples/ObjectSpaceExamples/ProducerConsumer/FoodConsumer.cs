@@ -5,12 +5,12 @@ using dotSpace.Interfaces.Space;
 using dotSpace.Objects.Space;
 using System;
 
-namespace ObjectSpace.Example4
+namespace ObjectSpace.ProducerConsumer
 {
-    public class FoodConsumer : ObjectSpaceAgentBaseSimple
+    public class FoodConsumer : ObjectSpaceAgentBase
     {
 
-        public FoodConsumer(string name, IObjectSpaceSimple ts) : base(name, ts)
+        public FoodConsumer(string name, IObjectSpace ts) : base(name, ts)
         {
         }
 
@@ -37,5 +37,8 @@ namespace ObjectSpace.Example4
                 Console.WriteLine(e.StackTrace);
             }
         }
+
     }
+
+
 }

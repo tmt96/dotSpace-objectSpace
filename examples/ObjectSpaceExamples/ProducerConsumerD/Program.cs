@@ -5,7 +5,7 @@ using dotSpace.Interfaces;
 using dotSpace.Objects.Space;
 using dotSpace.Objects.Network;
 
-namespace ObjectSpace.Example4
+namespace ObjectSpace.ProducerConsumerD
 {
     public class Program
     {
