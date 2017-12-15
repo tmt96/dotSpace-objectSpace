@@ -8,7 +8,7 @@ The framework was originally designed and developed by [Shane D. McLean](https:/
 
 This fork is a port of the application to support .NET Standard 2.0. With this port, the library could be used from all three popular .NET runtime: .NET Framework on Windows, and .NET Core and Mono on both Windows and *nix. Ultimately the goal is to have the library support an object space - an extension of the original tuple space idea.
 
-The goal of the fork is to support [object space](docs/Proposal.md), an extension on the original idea of tuple space. THis fork is maintained by Tuan Tran and Daishiro Nishida as part of their project for Williams College's Distributed System course.
+The goal of the fork is to support [object space](docs/Proposal.md), an extension on the original idea of tuple space. This fork is maintained by Tuan Tran and Daishiro Nishida as part of their project for Williams College's Distributed System course.
 
 ## Building
 
@@ -70,4 +70,40 @@ Follow these links for more information on [.NET Standard](https://docs.microsof
 
 ## Additional Documentation
 
-Please go to dotSpace's [wiki page](https://github.com/pSpaces/dotSpace/wiki) for [documentation on the API](https://github.com/pSpaces/dotSpace/wiki/basics) and [dotSpace-examples' wiki page](https://github.com/pSpaces/dotSpace-Examples/wiki) for information about the examples. We currently have the first seven examples in the library for testing purposes.
+Please go to dotSpace's [wiki page](https://github.com/pSpaces/dotSpace/wiki) for [documentation on the API](https://github.com/pSpaces/dotSpace/wiki/basics) and [dotSpace-examples' wiki page](https://github.com/pSpaces/dotSpace-Examples/wiki) for information about the examples.
+
+## Main Extensions
+
+# TreeSpace
+
+* TreeSpace (dotSpace/Objects/Space/TreeSpace.cs): Implementation of a tuple space optimized for lookups. Uses the TupleTree data structure.
+
+* TupleTree (dotSpace/Utility/TupleTree.cs): A data structure which stores tuples in a tree.
+
+# ObjectSpace
+
+* ObjectSpaceBase (dotSpace/BaseClasses/Space/): An abstract class which supports the main operations for an ObjectSpace. Stores an OSBEntry for each type, which takes care of storing objects of the type and keeping track of all subclasses and superclasses.
+
+* ObjectSpaceBaseSimple (dotSpace/BaseClasses/Space/): An abstract class which is a simplified version of ObjectSpaceBase, used for RemoteObjectSpace. Does not handle filtered gets and queries.
+
+* SequentialObjectSpace (dotSpace/Objects/Space/): Actual implementation of an ObjectSpaceBase.
+
+* RemoteObjectSpace (dotSpace/Objects/Network/): Allows a user to access an ObjectSpaceSimple remotely.
+
+* ObjectOperationMap (dotSpace/Objects/Network): Reads in a request message (a wrapper for a remote function call) and executes it.
+
+* OSBEntry, OSBObjectCollection, OSBSubtypeCollection (dotSpace/BaseClasses/Utility/): Data structures which takes care of objects of a certain type and keeps track of all subclasses and superclasses.
+
+Other additions include classes and interfaces that mimic existing ones but are adapted for the implementation of an ObjectSpace.
+
+# Main Examples
+
+* ClickRate (examples/ClickRate/): A program which reads in impressions and clicks for advertisements, and computes the click-through rate for each ad.
+
+* ClickRateD (examples/distributed/ClickRateD/): A distributed version of the ClickRate program.
+
+* Fork (examples/ObjectSpaceExamples/Fork/): A version of Example2 (dining philosophers problem) which uses ObjectSpace.
+
+* ProducerConsumer (examples/ObjectSpaceExamples/ProducerConsumer/): An example of how subtyping and filtering may be used with ObjectSpace.
+
+* ProducerConsumerD (examples/ObjectSpaceExamples/ProducerConsumerD/): A distributed version of the ProducerConsumer program.
