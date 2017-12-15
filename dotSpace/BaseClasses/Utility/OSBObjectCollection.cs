@@ -35,7 +35,7 @@ namespace dotSpace.BaseClasses.Utility
                 return;
             }
             ObjectLock.EnterWriteLock();
-            ObjectList.Insert(pos, item);
+            ObjectList.Insert(pos > ObjectList.Count ? ObjectList.Count : pos, item);
             ObjectLock.ExitWriteLock();
         }
 
