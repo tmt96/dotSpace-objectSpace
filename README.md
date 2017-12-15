@@ -2,9 +2,9 @@
 
 ## Introduction
 
-This framework provides support to concurrent and distributed programming with (tuple) spaces in .NET. The framework could be found on [GitHub](https://github.com/tmt96/dotSpace-objectSpace/)
+This framework provides support to concurrent and distributed programming with (tuple) spaces in .NET. The framework could be found on [GitHub](https://github.com/tmt96/dotSpace-objectSpace/).
 
-The framework was originally designed and developed by [Shane D. McLean](https://github.com/sequenze) in collaboration with [Alberto Lluch Lafuente](https://github.com/albertolluch). The original framework could be found [here](https://github.com/pSpaces/dotSpace/)
+The framework was originally designed and developed by [Shane D. McLean](https://github.com/sequenze) in collaboration with [Alberto Lluch Lafuente](https://github.com/albertolluch). The original framework could be found [here](https://github.com/pSpaces/dotSpace/).
 
 This fork is a port of the application to support .NET Standard 2.0. With this port, the library could be used from all three popular .NET runtime: .NET Framework on Windows, and .NET Core and Mono on both Windows and *nix. Ultimately the goal is to have the library support an object space - an extension of the original tuple space idea.
 
@@ -84,26 +84,25 @@ Please go to dotSpace's [wiki page](https://github.com/pSpaces/dotSpace/wiki) fo
 
 #### Interface
 
-* [IObjectSpaceSimple](dotSpace/Interfaces/ObjectSpace/IObjectSpaceSimple.cs) and [IObjectSpace](dotSpace/Interfaces/ObjectSpace/IObjectSpace.cs): Specify the interface for an ObjectSpace
+* [IObjectSpaceSimple](dotSpace/Interfaces/ObjectSpace/IObjectSpaceSimple.cs) and [IObjectSpace](dotSpace/Interfaces/ObjectSpace/IObjectSpace.cs): Specify the interface for an ObjectSpace.
 
-* [IObjectMessage](dotSpace/Interfaces/ObjectNetwork/IObjectMessage.cs): Base interface for all network message
+* [IObjectMessage](dotSpace/Interfaces/ObjectNetwork/IObjectMessage.cs): Base interface for all network message.
 
-* [IObjectRepository](dotSpace/Interfaces/ObjectNetwork/IObjectRepository.cs) and [IObjectRepositorySimple](dotSpace/Interfaces/ObjectNetwork/IObjectRepositorySimple.cs): Specify the interface for a remote ObjectSpace Space repository
+* [IObjectRepository](dotSpace/Interfaces/ObjectNetwork/IObjectRepository.cs) and [IObjectRepositorySimple](dotSpace/Interfaces/ObjectNetwork/IObjectRepositorySimple.cs): Specify the interface for a remote ObjectSpace Space repository.
 
 #### Classes
 
 The classes we added to the project can be found in these folders:
 
-* [ObjectSpaceBase](dotSpace/BaseClasses/ObjectSpace/): An abstract class which supports the main operations for an ObjectSpace. We also provide base implementation of ObjectSpace agents for ease of use
+* [ObjectSpaceBase](dotSpace/BaseClasses/ObjectSpace/): An abstract class which supports the main operations for an ObjectSpace. We also provide base implementation of ObjectSpace agents for ease of use.
 
 * [ObjectSpace Utilities](dotSpace/BaseClasses/ObjectUtility/): Includes classes that make up an entry in the base ObjectSpace
 
 * [Base remote Object Message Classes](dotSpace/BaseClasses/ObjectNetwork): Base classes for distributed ObjectSpace, including base classes for network messages, a base Json encoder for network messages, and a base remote space repository.
 
-* [SequentialObjectSpace](dotSpace/Objects/ObjectSpace/): A sample FIFO implementation of ObjectSpace
+* [SequentialObjectSpace](dotSpace/Objects/ObjectSpace/): A sample FIFO implementation of ObjectSpace.
 
-
-* [Remote ObjectSpace & Object Repository](dotSpace/Objects/ObjectNetwork/): Allows a user to access an ObjectSpaceSimple remotely, including implementations of a remote Object Space, remote Space Repository, a custom Json writer, an OperationMap to handle different types of message, and all network messages in ObjectSpace
+* [Remote ObjectSpace & Object Repository](dotSpace/Objects/ObjectNetwork/): Allows a user to access an ObjectSpaceSimple remotely, including implementations of a remote Object Space, remote Space Repository, a custom Json writer, an OperationMap to handle different types of message, and all network messages in ObjectSpace.
 
 Other additions include classes and interfaces that mimic existing ones but are adapted for the implementation of an ObjectSpace.
 
