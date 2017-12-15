@@ -5,12 +5,12 @@ using dotSpace.Interfaces.Space;
 using dotSpace.Objects.Space;
 using System;
 
-namespace ObjectSpace.Example2
+namespace ObjectSpace.ProducerConsumer
 {
-    public class SmallFoodConsumer : ObjectSpaceAgentBase
+    public class Consumer : ObjectSpaceAgentBase
     {
 
-        public SmallFoodConsumer(string name, IObjectSpace ts) : base(name, ts)
+        public Consumer(string name, IObjectSpace ts) : base(name, ts)
         {
         }
 
@@ -19,15 +19,16 @@ namespace ObjectSpace.Example2
 			Console.WriteLine(name + " is awake.");
                        
             // The tuple is necessary to capture the result of a get operation
-            Food f;
+            Item f;
             try
             {
                 while (true)
-                {					
-                    f = this.Get<Food>(food => food.amount < 10);
+                {
+                    // The get operation returns a tuple, that we save into t
+                    f = this.Get<Item>();
 
                     // Note how the fields of the tuple t are accessed
-					Console.WriteLine(name + " shopping " + f.amount + " units of " + f.name + "...");
+                    Console.WriteLine(name + " shopping some " + f.name + "...");
                 }
             }
             catch (Exception e)
